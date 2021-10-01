@@ -617,10 +617,8 @@ ___________________________
        
     3.2) Registro:
 
-        Representan un registro del procesador.
-        
-        Para referenciarlos tenemos que usar el nombre
-        del registro.
+        Representa un registro del procesador. Se referencia
+		usando el nombre del registro.
         
         Ejemplo:
         
