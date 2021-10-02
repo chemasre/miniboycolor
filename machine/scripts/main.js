@@ -107,7 +107,8 @@
 	{
 		none: 0,
 		manual: 1,
-		reference: 2
+		reference: 2,
+		asciiTable: 3
 	}
 
 	var opCodes =
@@ -142,14 +143,14 @@
 		procWait:				27,
 		call:					28,
 		ret:					29,
-		keyboardWaitInput:		30,
-		keyboardInput:			31,		
-		keyboardInputClear:		32,
-		keyboardIsKeyPressed:   33,
-		inputReadLine:          34,
-		outputWriteLine:        35,
-		inputReadNumber:        36,
-		outputWriteNumber:      37,
+		keyboardIsKeyPressed:   30,
+		inputReadString:        31,
+		outputWriteString:      32,
+		outputWriteLineEnd:     33,
+		inputReadNumber:        34,
+		outputWriteNumber:      35,
+		inputReadCharacter:     36,
+		outputWriteCharacter:   37,
 		randGenerate:			38,
 		screenClear:			39,
 		screenSetClearColor:	40,
@@ -325,34 +326,24 @@
 				argCount : 0
 			},
 			{
-				opCodeNames : [ "_ESPERA_TECLA_"],
-				opCode : opCodes.keyboardWaitInput,
-				argCount : 0
-			},
-			{
-				opCodeNames : [ "_OBTEN_TECLA_"],
-				opCode : opCodes.keyboardInput,
-				argCount : 1
-			},
-			{
-				opCodeNames : [ "_LIMPIA_TECLA_"],
-				opCode : opCodes.keyboardInputClear,
-				argCount : 0
-			},
-			{
 				opCodeNames : [ "_TECLA_PULSADA_"],
 				opCode : opCodes.keyboardIsKeyPressed,
 				argCount : 2
 			},
 			{
-				opCodeNames : [ "_LEE_LINEA_"],
-				opCode : opCodes.inputReadLine,
+				opCodeNames : [ "_LEE_CADENA_"],
+				opCode : opCodes.inputReadString,
 				argCount : 1
 			},
 			{
-				opCodeNames : [ "_ESCRIBE_LINEA_"],
-				opCode : opCodes.outputWriteLine,
+				opCodeNames : [ "_ESCRIBE_CADENA_"],
+				opCode : opCodes.outputWriteString,
 				argCount : 1
+			},
+			{
+				opCodeNames : [ "_ESCRIBE_FIN_LINEA_"],
+				opCode : opCodes.outputWriteLineEnd,
+				argCount : 0
 			},
 			{
 				opCodeNames : [ "_LEE_NUMERO_"],
@@ -364,6 +355,16 @@
 				opCode : opCodes.outputWriteNumber,
 				argCount : 1
 			},
+			{
+				opCodeNames : [ "_LEE_CARACTER_"],
+				opCode : opCodes.inputReadCharacter,
+				argCount : 1
+			},			
+			{
+				opCodeNames : [ "_ESCRIBE_CARACTER_"],
+				opCode : opCodes.outputWriteCharacter,
+				argCount : 1
+			},			
 			{
 				opCodeNames : [ "_NUMERO_ALEATORIO_"],
 				opCode : opCodes.randGenerate,
@@ -821,9 +822,13 @@
 			{
 				text = texts.helpManual;
 			}
-			else // this.helpCurrentId == helpId.reference
+			else if(this.helpCurrentId == helpId.reference)
 			{
 				text = this.helpReference;
+			}
+			else // this.helpCurrentId == helpId.asciiTable
+			{
+				text = texts.asciiTable;
 			}
 			
 			var contents = document.getElementById("helpDialogContents");
@@ -2187,13 +2192,19 @@
 			
 			for(var i = 0; i < constants.keyboardKeyCodeCount; i ++) { this.keyboardKeysState[i] = false; }
 			
-			this.inputLineReady = false;
-			this.inputWaitLineDestinationArgInstruction = 0;
-			this.inputWaitLineDestinationArg = 0;
-			this.inputWaitLineIsNumber = false;
+			this.inputWaitString = false
+			this.inputStringReady = false;
+			this.inputWaitStringDestinationInstructionIndex = 0;
+			this.inputWaitStringDestinationArgIndex = 0;
+			this.inputWaitStringIsNumber = false;
+			
+			this.inputWaitCharacter = false;
+			this.inputCharacterReady = false;
+			this.inputWaitCharacterDestinationInstructionIndex = 0;
+			this.inputWaitCharacterDestinationArgIndex = 0;
 		}
 		
-		KeyboardDoReadNumberLine(argInstructionIndex, argIndex)
+		KeyboardDoReadNumberString(argInstructionIndex, argIndex)
 		{
 			var i = 0;
 			var markFound = false;
@@ -2229,7 +2240,7 @@
 			
 		}
 		
-		KeyboardDoReadLine(address)
+		KeyboardDoReadString(address)
 		{
 		
 			var i = 0;
@@ -2257,6 +2268,37 @@
 				this.memory[this.inputMemoryAddress + i] = 0;
 			}
 			
+		}
+		
+		KeyboardDoWriteCharacter(c)
+		{
+			var memorySize = this.MemoryGetSize();
+			var done = false;
+			var i = 0;
+			
+			while(!done && i < configuration.outputMemorySize)
+			{
+				if(this.memory[this.outputMemoryAddress + i] == 0)
+				{
+					this.memory[this.outputMemoryAddress + i] = c;
+					done = true;
+				}
+				else
+				{
+					i ++;
+				}
+						
+			}
+			
+			if(!done)
+			{
+				for(var i = 1; i < configuration.outputMemorySize; i ++)
+				{
+					this.memory[this.outputMemoryAddress + i - 1] = this.memory[this.outputMemoryAddress + i];
+				}
+				
+				this.memory[this.outputMemoryAddress + configuration.outputMemorySize - 1] = c;
+			}			
 		}
 		
 		// Audio
@@ -2626,41 +2668,51 @@
 					{
 						this.keyboardKeysState[this.keyPressedCode] = true;
 						
-						if(this.keyPressedCode == constants.keyboardIntroCode)
+						if(this.inputWaitCharacter)
 						{
-							this.inputLineReady = true;
+							this.inputCharacterReady = true;
 						}
-						else if(!this.inputLineReady)
+						if(this.inputWaitString)
 						{
-							var i = 0;
-							var last = 0;
-							var found = false;
-							
-							while(i < configuration.inputMemorySize && !found)
+							if(this.keyPressedCode == constants.keyboardIntroCode)
 							{
-								if(this.memory[this.inputMemoryAddress + i] == 0)
+								this.inputStringReady = true;
+							}
+							else if(!this.inputStringReady)
+							{
+								// Handle line editing
+								
+								var i = 0;
+								var last = 0;
+								var found = false;
+								
+								while(i < configuration.inputMemorySize && !found)
 								{
-									found = true;
-									last = i;
+									if(this.memory[this.inputMemoryAddress + i] == 0)
+									{
+										found = true;
+										last = i;
+									}
+									else
+									{
+										i ++;
+									}
+								}
+								
+								if(this.keyPressedCode == constants.keyboardBackspaceCode)
+								{
+									if(found)
+									{   if(last > 0)
+										{ this.memory[this.inputMemoryAddress + last - 1] = 0; }
+									}
+									else
+									{  this.memory[this.inputMemoryAddress + configuration.inputMemorySize - 1] = 0; }
 								}
 								else
-								{
-									i ++;
+								{	if(found)
+									{ this.memory[this.inputMemoryAddress + last] = this.keyPressedCode; }
 								}
-							}
-							
-							if(this.keyPressedCode == constants.keyboardBackspaceCode)
-							{
-								if(found)
-								{   if(last > 0)
-									{ this.memory[this.inputMemoryAddress + last - 1] = 0; }
-								}
-								else
-								{  this.memory[this.inputMemoryAddress + configuration.inputMemorySize - 1] = 0; }
-							}
-							else
-							{	if(found)
-								{ this.memory[this.inputMemoryAddress + last] = this.keyPressedCode; }
+								
 							}
 							
 						}
@@ -2686,26 +2738,32 @@
 					{ this.waitTimer = false; }
 					
 				}
-				else if(this.keyboardWaitKey)
+				else if(this.inputWaitCharacter)
 				{
-					if(this.keyPressed) { this.keyboardWaitKey = false; }
-				}
-				else if(this.inputWaitLine)
-				{
-					if(this.inputLineReady)
+					if(this.inputCharacterReady)
 					{
-						if(this.inputWaitLineIsNumber)
+						this.ProgramWriteArg(this.inputWaitCharacterDestinationInstructionIndex, this.inputWaitCharacterDestinationArgIndex, this.keyPressedCode);
+						
+						this.inputCharacterReady = false;
+						this.inputWaitCharacter = false;
+					}
+				}
+				else if(this.inputWaitString)
+				{
+					if(this.inputStringReady)
+					{
+						if(this.inputWaitStringIsNumber)
 						{
-							this.KeyboardDoReadNumberLine(this.inputWaitLineDestinationArgInstruction, this.inputWaitLineDestinationArg);
+							this.KeyboardDoReadNumberString(this.inputWaitStringDestinationInstructionIndex, this.inputWaitStringDestinationArgIndex);
 						}
 						else
 						{
-							this.KeyboardDoReadLine(this.inputWaitLineDestinationAddress);
+							this.KeyboardDoReadString(this.inputWaitStringDestinationAddress);
 
 						}
 						
-						this.inputLineReady = false;
-						this.inputWaitLine = false;
+						this.inputStringReady = false;
+						this.inputWaitString = false;
 					}
 				}
 				else
@@ -2722,7 +2780,7 @@
 					
 				}
 				
-				if(this.step && !(this.keyboardWaitKey || this.inputWaitLine || this.waitTimer))
+				if(this.step && !(this.inputWaitString || this.waitTimer || this.inputWaitCharacter))
 				{
 					this.nextState = states.stateStopped;				
 					this.step = false;
@@ -3038,18 +3096,7 @@
 				this.state = this.nextState;
 			}
 			
-			if(showScreen)
-			{
-				// this.refreshScreenTickCount ++;
-				// if(this.refreshScreenTickCount >= this.refreshScreenTicks || forceRefreshScreen)
-				// {
-					// this.ScreenShow();
-					// this.InputOutputShow(true);
-					// this.InputOutputShow(false);
-					// this.refreshScreenTickCount = 0;
-				// }
-			}
-			
+		
 			if(showTimer)
 			{
 				this.TimerShow();
@@ -3349,18 +3396,6 @@
 				
 
 			}
-			else if(opCode == opCodes.keyboardWaitInput)
-			{
-				this.keyboardWaitKey = true;
-			}
-			else if(opCode == opCodes.keyboardInput)
-			{
-				this.ProgramWriteArg(instructionIndex, 0, this.keyboardLastKeyPressed);
-			}
-			else if(opCode == opCodes.keyboardInputClear)
-			{
-				this.keyboardLastKeyPressed = 0;
-			}
 			else if(opCode == opCodes.keyboardIsKeyPressed)
 			{
 				var code = this.ProgramReadArg(instructionIndex, 1);
@@ -3371,26 +3406,17 @@
 				
 				this.ProgramWriteArg(instructionIndex, 0, result);
 			}
-			else if(opCode == opCodes.inputReadLine)
+			else if(opCode == opCodes.inputReadString)
 			{
 				var address = this.ProgramReadArg(instructionIndex, 0);
 
-				if(this.inputLineReady)
-				{
-					this.KeyboardDoReadLine(address);
-					this.inputLineReady = false;
-					
-				}
-				else
-				{
-					this.inputWaitLine = true;
-					this.inputWaitLineDestinationAddress = address;
-					this.inputWaitLineIsNumber = false;
-
-				}
+				this.inputWaitString = true;
+				this.inputStringReady = false;				
+				this.inputWaitStringDestinationAddress = address;
+				this.inputWaitStringIsNumber = false;
 				
 			}			
-			else if(opCode == opCodes.outputWriteLine)
+			else if(opCode == opCodes.outputWriteString)
 			{
 				var address = this.ProgramReadArg(instructionIndex, 0);
 				
@@ -3398,41 +3424,40 @@
 				var markFound = false;
 				var i = 0;
 				
-				while(!markFound && i < configuration.outputMemorySize && i + this.outputMemoryAddress < memorySize)
+				while(!markFound && address + i < memorySize)
 				{
 					var c = this.memory[address + i];
 					
 					if(c == 0)
 					{
-						this.memory[this.outputMemoryAddress + i] = 0;
 						markFound = true;
 					}
 					else
 					{
-						this.memory[this.outputMemoryAddress + i] = c;
-						i ++;
-						
+						this.KeyboardDoWriteCharacter(c);
+						i ++;				
 					}
 							
 				}
 				
 			}	
+			else if(opCode == opCodes.outputWriteLineEnd)
+			{
+				
+				for(var i = 0; i < configuration.outputMemorySize; i ++)
+				{
+					this.memory[this.outputMemoryAddress + i] = 0;
+				}
+				
+				
+			}	
 			else if(opCode == opCodes.inputReadNumber)
 			{
-
-				if(this.inputLineReady)
-				{
-					this.KeyboardDoReadNumberLine(instructionIndex, 0);
-					this.inputLineReady = false;
-					
-				}
-				else
-				{
-					this.inputWaitLine = true;
-					this.inputWaitLineDestinationArgInstruction = instructionIndex;
-					this.inputWaitLineDestinationArg = 0;
-					this.inputWaitLineIsNumber = true;
-				}
+				this.inputWaitString = true;
+				this.inputStringReady = false;
+				this.inputWaitStringDestinationInstructionIndex = instructionIndex;
+				this.inputWaitStringDestinationArgIndex = 0;
+				this.inputWaitStringIsNumber = true;
 				
 			}
 			else if(opCode == opCodes.outputWriteNumber)
@@ -3445,17 +3470,29 @@
 				var markFound = false;
 				var i = 0;
 				
+				
 				while(i < text.length && i < configuration.outputMemorySize && i + this.outputMemoryAddress < memorySize)
 				{
-					this.memory[this.outputMemoryAddress + i] = text.charCodeAt(i);
+					this.KeyboardDoWriteCharacter(text.charCodeAt(i));
 					i ++;
 							
 				}
 				
-				if(text.length < configuration.outputMemorySize - 1)
-				{
-					this.memory[this.outputMemoryAddress + text.length] = 0;
-				}
+				
+			}
+			else if(opCode == opCodes.inputReadCharacter)
+			{
+				this.inputWaitCharacter = true;
+				this.inputCharacterReady = false;
+				this.inputWaitCharacterDestinationInstructionIndex = instructionIndex;
+				this.inputWaitCharacterDestinationArgIndex = 0;
+				
+			}			
+			else if(opCode == opCodes.outputWriteCharacter)
+			{
+				var c = this.ProgramReadArg(instructionIndex, 0);
+				
+				this.KeyboardDoWriteCharacter(c);
 				
 			}
 			else if(opCode == opCodes.randGenerate)
@@ -3869,9 +3906,10 @@
 				this.lastGeneratedTone[i] = 0;
 			}
 			this.waitTimer = false;
-			this.keyboardWaitKey = false;			
-			this.inputWaitLine = false;
-			this.inputLineReady = false;
+			this.inputWaitString = false;
+			this.inputStringReady = false;
+			this.inputWaitCharacter = false;
+			this.inputCharacterReady = false;
 		}
 		
 		DoExitStateRunning()
