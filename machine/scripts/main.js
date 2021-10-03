@@ -23,7 +23,7 @@
 
 	var configuration =
 	{
-		version: "2.0",
+		version: "2.12",
 		staticMemorySize: 16,
 		stackMemorySize: 16,
 		screenWidth: 16,

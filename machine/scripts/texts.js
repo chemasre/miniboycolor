@@ -831,35 +831,30 @@ resistro BP y la cantidad de parámetros arg2
 y desmonta dicha dirección y el resto de datos que 
 la llamada apiló
 `,
-`Macro que pone el procesador en espera hasta que 
-se pulse una tecla
-`,
-`Macro que deja en arg1 el código correspondiente 
-a la última tecla pulsada
-`,
-`Macro que provoca que el teclado borre de su memoria 
-interna el valor de la última tecla pulsada
-`,
 `Macro que deja en arg1 el valor CIERTO(1) si la tecla 
 indicada por arg2 está pulsada y FALSO(0) si no
 `,
-`Macro que almacena a partir la dirección de memoria 
-indicada por arg1 una línea de texto introducida 
-por el usuario, añadiendo un 0 como marca de final. 
-Si no se ha introducido una línea previamente, pone el
-procesador en espera hasta que el usuario la introduzca
+`Macro que pone el procesador en espera hasta que el
+usuario escribe una cadena de texto y la almacena en
+memoria a partir la dirección indicada por arg1
 `,
-`Macro que muestra la línea de texto almacenada 
+`Macro que muestra la cadena de texto almacenada 
 a partir de la dirección de memoria indicada por arg1
 `,
-`Macro que almacena en arg1 el valor numérico 
-correspondiente a una línea de texto introducida 
-por el usuario. Si no se ha introducido una línea
-previamente,  pone el procesador en espera hasta que
-el usuario la introduzca
+`Macro que escribe un final de linea en la salida
+`,
+`Macro que pone el procesador en espera hasta que el
+usuario escribe un valor numérico, lo convierte en una
+cadena de texto y la almacena a partir de la dirección
+indicada por arg1
 `,
 `Macro que muestra como texto el valor numérico 
 indicado por arg1
+`,
+`Macro que pone el procesador en espera hasta que el
+usuario escribe un carácter y lo almacena en arg1
+`,
+`Macro que escribe el carácter indicado por arg1
 `,
 `Macro que almacena en arg1 un número aleatorio 
 comprendido entre arg1 y arg2, ambos incluidos
