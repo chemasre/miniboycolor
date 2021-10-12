@@ -1,0 +1,20 @@
+Versión 2.13
+
+- Añadidas macros _MONTA_LOCAL_, _MONTA_PARAMETRO_, _PON_LOCAL_, _OBTEN_LOCAL_, _OBTEN_PARAMETRO_
+
+Versión 2.14
+
+- Añadidas macros _COPIA_CADENA_, _LONGITUD_CADENA_
+- Añadido índice a la ayuda.
+- Añadida posibilidad de definir arrays de datos en el programa y añadida macro _MUEVE_DATOS_
+- Añadida tabla de frecuencias musicales a la ayuda
+
+2.15
+
+- Arreglado bug que hacía que _TECLA_PULSADA_ siempre devolviese cierto cuando el programa se ejecuta paso a paso.
+
+2.16
+
+- Arreglado bug que provocaba que la página no hiciese scroll cuando se cambiaba la configuración de la máquina.
+- Añadida instrucción _PON_PIXELS_, que permite poner en pantalla datos de pixels.
+- Añadido botón a la interfaz para generar datos de píxels a partir de una imagen en formato png.
