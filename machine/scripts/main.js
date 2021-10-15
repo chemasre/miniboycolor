@@ -23,7 +23,7 @@
 
 	var configuration =
 	{
-		version: "2.14",
+		version: "2.17",
 		staticMemorySize: 16,
 		stackMemorySize: 16,
 		screenWidth: 16,
@@ -80,7 +80,7 @@
 		instructionResultContinue: 0,
 		instructionResultProgramEnd: 1,
 		instructionResultInterrupt: 2,
-		showOnRunProcessorFrequencyLimit: 100		
+		showOnRunProcessorFrequencyLimit: 100,		
 		
 	}
 	
@@ -161,29 +161,36 @@
 		screenSetClearColorR:	44,
 		screenSetClearColorG:	45,
 		screenSetClearColorB:	46,
-		screenGetPixel:			47,
-		screenGetPixelR:		48,
-		screenGetPixelG:		49,
-		screenGetPixelB:		50,
-		screenSetPixel:			51,
-		screenSetPixelR:		52,
-		screenSetPixelG:		53,
-		screenSetPixelB:		54,
-		screenSetPixelRGB:		55,
-		screenSetPixels:         56,
-		soundEmit:				57,
-		soundStop:				58,
-		stackPush:				59,
-		stackPop:				60,
-		stackGetLocal:			61,
-		stackSetLocal:			62,
-		stackGetParameter:		63,
-		stackPushParameter:		64,
-		allocateMemory:			65,
-		releaseMemory:			66,
-		getTimer:				67,
-		resetTimer:				68,
-		breakPoint:				69
+		screenSetColorKey:		47,
+		screenSetColorKeyR:		48,
+		screenSetColorKeyG:		49,
+		screenSetColorKeyB:		50,
+		screenSetColorKeyEnabled: 51,
+		screenSetFlipXEnabled:	52,
+		screenSetFlipYEnabled:	53,
+		screenGetPixel:			54,
+		screenGetPixelR:		55,
+		screenGetPixelG:		56,
+		screenGetPixelB:		57,
+		screenSetPixel:			58,
+		screenSetPixelR:		59,
+		screenSetPixelG:		60,
+		screenSetPixelB:		61,
+		screenSetPixelRGB:		62,
+		screenDrawImage:        63,
+		soundEmit:				64,
+		soundStop:				65,
+		stackPush:				66,
+		stackPop:				67,
+		stackGetLocal:			68,
+		stackSetLocal:			69,
+		stackGetParameter:		70,
+		stackPushParameter:		71,
+		allocateMemory:			72,
+		releaseMemory:			73,
+		getTimer:				74,
+		resetTimer:				75,
+		breakPoint:				76
 		
 	}
 	
@@ -465,10 +472,45 @@
 				argCount : 3
 			},
 			{
-				opCodeNames : [ "_PON_PIXELS_"],
-				opCode : opCodes.screenSetPixels,
+				opCodeNames : [ "_DIBUJA_IMAGEN_"],
+				opCode : opCodes.screenDrawImage,
 				argCount : 3
 			},
+			{
+				opCodeNames : [ "_PON_USAR_COLOR_CLAVE_"],
+				opCode : opCodes.screenSetColorKeyEnabled,
+				argCount : 1
+			},			
+			{
+				opCodeNames : [ "_PON_COLOR_CLAVE_"],
+				opCode : opCodes.screenSetColorKey,
+				argCount : 1
+			},			
+			{
+				opCodeNames : [ "_PON_COLOR_CLAVE_R_"],
+				opCode : opCodes.screenSetColorKeyR,
+				argCount : 1
+			},			
+			{
+				opCodeNames : [ "_PON_COLOR_CLAVE_G_"],
+				opCode : opCodes.screenSetColorKeyG,
+				argCount : 1
+			},			
+			{
+				opCodeNames : [ "_PON_COLOR_CLAVE_B_"],
+				opCode : opCodes.screenSetColorKeyB,
+				argCount : 1
+			},		
+			{
+				opCodeNames : [ "_PON_INVERTIR_X_"],
+				opCode : opCodes.screenSetFlipXEnabled,
+				argCount : 1
+			},			
+			{
+				opCodeNames : [ "_PON_INVERTIR_Y_"],
+				opCode : opCodes.screenSetFlipYEnabled,
+				argCount : 1
+			},				
 			{
 				opCodeNames : [ "_EMITE_SONIDO_"],
 				opCode : opCodes.soundEmit,
@@ -1308,8 +1350,10 @@
 			c.value = "dinamica";
 			c = this.memoryLabelsCells[this.timerMemoryAddress];
 			c.value = "temporizadores";
+
 			
-			
+
+
 			
 			
 			
@@ -1413,17 +1457,23 @@
 				window.alert("Es posible que algunas instrucciones de programa no se hayan podido cargar porque el tamaño de la memoria de programa es demasiado pequeño");
 			}
 			
-		}		
+		}
+			
+		ScreenGetControlMemorySize()
+		{
+			return 2 * configuration.screenDepth + 3;			
+		}
+		
 		
 		ScreenGetMemorySize()
 		{
-			return configuration.screenDepth + configuration.screenDepth * configuration.screenWidth * configuration.screenHeight;
+			return this.ScreenGetControlMemorySize() + configuration.screenDepth * configuration.screenWidth * configuration.screenHeight;
 		}
 		
 		
 		ScreenGetPixelsStartAddress()
 		{
-			return this.screenMemoryAddress + configuration.screenDepth;
+			return this.screenMemoryAddress + this.ScreenGetControlMemorySize();
 		}
 		
 		MemoryGetSize()
@@ -1989,6 +2039,31 @@
 		}		
 		
 		
+		ProgramInsertStringData()
+		{
+			var text = prompt("Escribe la cadena de texto que quieres convertir en datos", "");
+			
+			if(text != null)
+			{
+				var contents = this.programCells[this.focusedProgramLine].value;
+				
+				contents += "{";
+				
+				for(var i = 0; i < text.length; i ++)
+				{
+					contents += text.charCodeAt(i) + (i < text.length - 1 ? "," : "");
+				}
+				
+				contents += ",0";
+				
+				contents += "}";
+				
+				this.programCells[this.focusedProgramLine].value = contents;
+				
+			}
+
+		}
+
 		ProgramInsertImageData()
 		{
 			
@@ -2184,9 +2259,17 @@
 
 			this.screenGridContext.globalAlpha = 1.0;			
 			
-			
-			
+						
 			this.screenBuffer = this.screenContext.createImageData(configuration.screenWidth, configuration.screenHeight);
+			
+
+			// Layout memory
+			
+			this.screenControlMemoryClearColorOffset = 0;
+			this.screenControlMemoryColorKeyOffset = this.screenControlMemoryClearColorOffset + configuration.screenDepth;
+			this.screenControlMemoryFlipXOffset = this.screenControlMemoryColorKeyOffset + configuration.screenDepth;
+			this.screenControlMemoryFlipYOffset = this.screenControlMemoryFlipXOffset + 1;
+			this.screenControlMemoryColorKeyEnabledOffset = this.screenControlMemoryFlipYOffset + 1;
 			
 
 			this.ScreenShow();
@@ -2665,6 +2748,7 @@
 			this.enableToneGenerator = false;
 			this.insertProgramLinePressed = false;
 			this.deleteProgramLinePressed = false;			
+			this.insertStringDataPressed = false;
 			this.insertImageDataPressed = false;
 			this.newProjectPressed = false;			
 			this.loadProjectPressed = false;			
@@ -3007,6 +3091,11 @@
 					this.programLabelsCells[configuration.programSize - 1].value = "";
 				}
 				
+				if(this.insertStringDataPressed)
+				{
+					this.ProgramInsertStringData();
+				}
+
 				if(this.insertImageDataPressed)
 				{
 					this.ProgramInsertImageData();
@@ -3345,6 +3434,7 @@
 			this.loadProgramPressed = false;
 			this.insertProgramLinePressed = false;
 			this.deleteProgramLinePressed = false;
+			this.insertStringDataPressed = false;
 			this.insertImageDataPressed = false;
 			this.newProjectPressed = false;
 			this.loadProjectPressed = false;			
@@ -3741,36 +3831,70 @@
 				{	
 					var pixelAddress = pixelsStartAddress + i * configuration.screenDepth;
 					
-					this.memory[pixelAddress + 0] = this.memory[this.screenMemoryAddress + 0];
+					this.memory[pixelAddress + 0] = this.memory[this.screenControlMemoryClearColorOffset + 0];
 					
 					if(configuration.screenDepth == 3)
 					{
-						this.memory[pixelAddress + 1] = this.memory[this.screenMemoryAddress + 1];
-						this.memory[pixelAddress + 2] = this.memory[this.screenMemoryAddress + 2];
+						this.memory[pixelAddress + 1] = this.memory[this.screenControlMemoryClearColorOffset + 1];
+						this.memory[pixelAddress + 2] = this.memory[this.screenControlMemoryClearColorOffset + 2];
 					}
 				}
 			}
-			else if(opCode == opCodes.screenSetClearColor || opCode == opCodes.screenSetClearColorR || opCode == opCodes.screenSetClearColorG || opCode == opCodes.screenSetClearColorB)
+			else if(opCode == opCodes.screenSetFlipXEnabled || opCode == opCodes.screenSetFlipYEnabled || opCode == opCodes.screenSetColorKeyEnabled)
 			{
 				var value = this.ProgramReadArg(instructionIndex, 0);
 				
-				if(opCode == opCodes.screenSetClearColor)
+				var offset = 0;
+				
+				if(opCode == opCodes.screenSetFlipXEnabled) { offset = this.screenControlMemoryFlipXOffset; }
+				else if(opCode == opCodes.screenSetFlipYEnabled) { offset = this.screenControlMemoryFlipYOffset; }
+				else // opCode == opCodes.screenSetColorKeyEnabled
+				{ offset = this.screenControlMemoryColorKeyEnabledOffset; }
+				
+				this.memory[this.screenMemoryAddress + offset] = value;
+				
+			}
+			else if(opCode == opCodes.screenSetClearColor || opCode == opCodes.screenSetClearColorR || opCode == opCodes.screenSetClearColorG || opCode == opCodes.screenSetClearColorB ||
+					opCode == opCodes.screenSetColorKey || opCode == opCodes.screenSetColorKeyR || opCode == opCodes.screenSetColorKeyG || opCode == opCodes.screenSetColorKeyB)
+			{
+				var value = this.ProgramReadArg(instructionIndex, 0);
+
+				if(opCode == opCodes.screenSetClearColor || opCode == opCodes.screenSetColorKey)
 				{
-					this.memory[this.screenMemoryAddress + 0] = value;
-				}
-				else if(configuration.screenDepth == 3)
-				{
-					var offset = 0;
-					if(opCode == opCodes.screenSetClearColorR) { offset = 0; }
-					else if(opCode == opCodes.screenSetClearColorG) { offset = 1; }
-					else // opCode == opCodes.screenSetClearColorG)
-					{ offset = 2; }
+					var offset = (opCode == opCodes.screenSetClearColor ? this.screenControlMemoryClearColorOffset: this.screenControlMemoryColorKeyOffset);
 					
 					this.memory[this.screenMemoryAddress + offset] = value;
 				}
+				else if(configuration.screenDepth == 3)
+				{
+					
+					var offset;
+					var channel;
+					
+					if(opCode == opCodes.screenSetClearColorR || opCode == opCodes.screenSetClearColorG || opCode == opCodes.screenSetClearColorB)
+					{
+						offset = this.screenControlMemoryClearColorOffset;
+						
+						if(opCode == opCodes.screenSetClearColorR) { channel = 0; }
+						else if(opCode == opCodes.screenSetClearColorG) { channel = 1; }
+						else // opCode == opCodes.screenSetClearColorB
+						{ channel = 2; }
+					}
+					else
+					{
+						offset = this.screenControlMemoryColorKeyOffset;
+
+						if(opCode == opCodes.screenSetColorKeyR) { channel = 0; }
+						else if(opCode == opCodes.screenSetColorKeyG) { channel = 1; }
+						else // opCode == opCodes.screenSetColorKeyB
+						{ channel = 2; }
+					}
+					
+					this.memory[this.screenMemoryAddress + offset + channel] = value;
+				}
 				else
 				{
-					alert("No establecer el color limpiado por canales en la línea de programa " + instructionIndex + " porque la pantalla no tiene suficiente profundidad");
+					alert("No se puede establecer el color por canales en la línea de programa " + instructionIndex + " porque la pantalla no tiene suficiente profundidad");
 				}
 				
 			}
@@ -3839,7 +3963,7 @@
 					instructionResult = constants.instructionResultProgramEnd;
 				}
 			}
-			else if(opCode == opCodes.screenSetPixels)
+			else if(opCode == opCodes.screenDrawImage)
 			{
 				var screenPositionX = this.ProgramReadArg(instructionIndex, 0);
 				var screenPositionY = this.ProgramReadArg(instructionIndex, 1);
@@ -3849,23 +3973,43 @@
 				var imageHeight = this.memory[imageAddress + 1];
 				var imageDepth = this.memory[imageAddress + 2];
 				
-				//alert("" + imageWidth + "x" + imageHeight + " " + imageDepth);
-				
 				if(imageDepth <= configuration.screenDepth)
 				{
 					for(var y = 0; y < imageHeight; y ++)
 					{
 						for(var x = 0; x < imageWidth; x ++)
 						{
+							var flipX = (this.memory[this.screenMemoryAddress + this.screenControlMemoryFlipXOffset] != 0);
+							var flipY = (this.memory[this.screenMemoryAddress + this.screenControlMemoryFlipYOffset] != 0);
+							
+							
 							var screenPixelX = screenPositionX + x;
 							var screenPixelY = screenPositionY + y;
 							
-							var imagePixelAddress = imageAddress + 3 + (y * imageWidth + x) * imageDepth;
+							var imagePixelAddress = imageAddress + 3 + ((flipY ? imageHeight - y - 1: y) * imageWidth + (flipX ? imageWidth - x - 1: x)) * imageDepth;
 							var screenPixelAddress = this.ScreenGetPixelsStartAddress() + configuration.screenDepth * (screenPixelY * configuration.screenWidth + screenPixelX);
 							
-							this.memory[screenPixelAddress + 0] = this.memory[imagePixelAddress + 0];
-							this.memory[screenPixelAddress + 1] = this.memory[imagePixelAddress + 1];
-							this.memory[screenPixelAddress + 2] = this.memory[imagePixelAddress + 2];
+							var imagePixelR = this.memory[imagePixelAddress + 0];
+							var imagePixelG = this.memory[imagePixelAddress + 1];
+							var imagePixelB = this.memory[imagePixelAddress + 2];
+							
+							var discard = false;
+							
+							if(this.memory[this.screenMemoryAddress + this.screenControlMemoryColorKeyEnabledOffset] != 0)
+							{
+								var keyColorR = this.memory[this.screenMemoryAddress + this.screenControlMemoryColorKeyOffset];
+								var keyColorG = this.memory[this.screenMemoryAddress + this.screenControlMemoryColorKeyOffset + 1];
+								var keyColorB = this.memory[this.screenMemoryAddress + this.screenControlMemoryColorKeyOffset + 2];
+								
+								discard = (imagePixelR == keyColorR && imagePixelG == keyColorG &&  imagePixelB == keyColorB);
+							}
+							
+							if(!discard)
+							{							
+								this.memory[screenPixelAddress + 0] = imagePixelR;
+								this.memory[screenPixelAddress + 1] = imagePixelG;
+								this.memory[screenPixelAddress + 2] = imagePixelB;
+							}
 							
 						}
 					}
@@ -4428,6 +4572,13 @@
 			
 		}
 		
+		OnInsertStringDataPressed()
+		{
+			this.insertStringDataPressed = true;
+			
+			this.ProcessorTick();
+		}
+
 		OnInsertImageDataPressed()
 		{
 			this.insertImageDataPressed = true;

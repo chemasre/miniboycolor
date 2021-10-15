@@ -1,5 +1,5 @@
 configuration
-version:2.0
+version:2.17
 processorFrequency:1000000
 staticMemorySize:128
 dynamicMemorySize:1400
@@ -27,14 +27,15 @@ Juego de la vida de Conway para MiniBoy Color.
 
 
 
+
 ---
 registers
-A:0
-B:0
-C:0
-PC:0
-SP:256
-BP:256
+A:18
+B:16
+C:181
+PC:48
+SP:253
+BP:253
 R:0
 ---
 memory
@@ -4804,6 +4805,12 @@ dinamica:3363:0
 :4763:0
 :4764:0
 :4765:0
+:4766:0
+:4767:0
+:4768:0
+:4769:0
+:4770:0
+:4771:0
 ---
 program
 :0:SALTA principal

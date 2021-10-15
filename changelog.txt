@@ -18,3 +18,12 @@ Versión 2.14
 - Arreglado bug que provocaba que la página no hiciese scroll cuando se cambiaba la configuración de la máquina.
 - Añadida instrucción _PON_PIXELS_, que permite poner en pantalla datos de pixels.
 - Añadido botón a la interfaz para generar datos de píxels a partir de una imagen en formato png.
+
+2.17
+
+- Añadido botón a la interfaz para generar datos de strings introducidos con un diálogo
+- Renombrada instrucción _PON_PIXELS_ a _DIBUJA_IMAGEN_.
+- La instrucción _DIBUJA_IMAGEN_ incluye ahora soporte para color key con instrucciones _PON_USAR_CLAVE_COLOR_, _PON_CLAVE_COLOR_, _PON_CLAVE_COLOR_R_, _PON_CLAVE_COLOR_G_, _PON_CLAVE_COLOR_B_
+- La instrucción _DIBUJA_IMAGEN_ incluye ahora soporte para flip en X e Y con instrucciones _PON_INVERTIR_X_ y _PON_INVERTIR_Y_
+- Añadido proyecto de prueba para nuevas funciones de _DIBUJA_IMAGEN_
+ 
