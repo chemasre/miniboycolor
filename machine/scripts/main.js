@@ -2060,6 +2060,8 @@
 				
 				this.programCells[this.focusedProgramLine].value = contents;
 				
+				alert("Longitud de los datos insertados: " + text.length + " celdas");
+				
 			}
 
 		}
@@ -2103,6 +2105,9 @@
 				this.programCells[this.focusedProgramLine].value = text;
 				
 				document.body.removeChild(canvas);
+				
+				alert("Longitud de los datos insertados: " + (width * height * 3 + 3) + " celdas");
+				
 
 				
 			}
