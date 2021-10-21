@@ -930,10 +930,33 @@ componentes de 8 bits. Requiere que la profundidad de
 pantalla sea 3
 `,
 `Macro que pone en las coordenadas definidas por arg1 y arg2
-los datos de píxels presentes en la dirección arg3.
-Requiere que la profundidad de los píxels sea menor o igual
-que la de la pantalla. Si es 1 y la de la pantalla es 3,
+los datos de imagen presentes en la dirección arg3.
+Requiere que la profundidad de la imagen sea menor o igual que
+la de la pantalla. Si es 1 y la de la pantalla es 3,
 los valores de los píxels se aplicarán al canal rojo.
+`,
+`Macro que activa el descarte de píxels por color clave en el
+dibujado si el valor de arg1 es 1 (CIERTO), o lo desactiva si
+es 0 (FALSO).
+`,
+`Macro que establece el valor en escala de grises del color
+clave si la profundidad de pantalla es 1 y el valor del
+canal rojo de este color si la profundidad de pantalla es 3.
+`,
+`Macro que establece el valor del canal rojo del color clave.
+Requiere que la profundidad de pantalla es 3.
+`,
+`Macro que establece el valor del canal verde del color clave.
+Requiere que la profundidad de pantalla es 3.
+`,
+`Macro que establece el valor del canal azul del color clave.
+Requiere que la profundidad de pantalla es 3.
+`,
+`Macro que activa el reflejo horizontal en el dibujado si el
+valor de arg1 es 1 (CIERTO) o lo desactiva si es 0 (FALSO).
+`,
+`Macro que activa el reflejo vertical en el dibujado si el
+valor de arg1 es 1 (CIERTO) o lo desactiva si es 0 (FALSO).
 `,
 `Macro que produce un sonido con frecuencia arg1 
 por el canal indicado por arg2. Requiere que el usuario
