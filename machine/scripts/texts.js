@@ -1269,5 +1269,32 @@ depuración.
 |----------|----------|--------------|
 |   SI     |    4     |     494      |
 +====================================+
+`,
+
+	shortcuts:
+`+====================================+
+|          MENÚ PRINCIPAL            |
++====================================+
+
+INICIO + N ........ Nuevo proyecto
+INICIO + L ........ Cargar proyecto
+INICIO + S ........ Guardar proyecto
+INICIO + C ........ Abrir configuración
+INICIO + R ........ Ejecutar
+INICIO + P ........ Ejecutar paso a paso
+INICIO + T ........ Parar
+INICIO + D ........ Activar o desactivar depuración
+INICIO + H ........ Abrir ayuda
+INICIO + A ........ Abrir \'acerca de\'
+
++====================================+
+|            PROGRAMA                |
++====================================+
+
+INSERTAR .......... Insertar línea de programa
+SUPRIMIR .......... Eliminar línea de programa
 `
+
+
+
 }

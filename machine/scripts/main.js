@@ -23,7 +23,7 @@
 
 	var configuration =
 	{
-		version: "2.17",
+		version: "2.18",
 		staticMemorySize: 16,
 		stackMemorySize: 16,
 		screenWidth: 16,
@@ -54,7 +54,22 @@
 		registerCount: 6,
 		keyboardKeyCodeCount: 256,
 		keyboardIntroCode: 13,
+		keyboardSpaceCode: 32,		
 		keyboardBackspaceCode: 8,
+		keyboardShortcutInsert: 45,
+		keyboardShortcutDelete: 46,
+		keyboardShortcutEnable: 36,		
+		keyboardShortcutReset: 82,
+		keyboardShortcutRun: 82,
+		keyboardShortcutStep: 80,
+		keyboardShortcutStop: 84,
+		keyboardShortcutDebug: 68,
+		keyboardShortcutLoad: 76,
+		keyboardShortcutSave: 83,
+		keyboardShortcutNew: 78,
+		keyboardShortcutConfiguration: 67,
+		keyboardShortcutHelp: 72,
+		keyboardShortcutAbout: 65,
 		inputOutputFontWidth: 512,
 		inputOutputFontHeight: 512,
 		inputOutputFontColumns: 16,
@@ -109,7 +124,8 @@
 		manual: 1,
 		reference: 2,
 		asciiTable: 3,
-		frequenciesTable: 4
+		frequenciesTable: 4,
+		shortcuts: 5
 	}
 
 	var opCodes =
@@ -822,6 +838,8 @@
 			
 			document.getElementById("dialogBase").style.display = "none";
 			document.body.style.overflow = "auto";
+			
+			this.currentDialog = dialogId.none;
 		}
 
 		// About
@@ -960,9 +978,13 @@
 			{
 				text = texts.asciiTable;
 			}
-			else // this.helpCurrentId == frequenciesTable
+			else if(this.helpCurrentId == helpId.frequenciesTable)
 			{
 				text = texts.frequenciesTable;
+			}
+			else // this.helpCurrentId == helpId.shortcuts)
+			{
+				text = texts.shortcuts;
 			}
 			
 			var contents = document.getElementById("helpDialogContents");
@@ -2750,6 +2772,7 @@
 			this.keyReleased = false;
 			this.keyReleasedCode = 0;
 			this.keyboardKeysState = new Array();
+			this.shortcutEnabled = false;
 			this.enableToneGenerator = false;
 			this.insertProgramLinePressed = false;
 			this.deleteProgramLinePressed = false;			
@@ -2889,6 +2912,71 @@
 					this.keyboardKeysState[this.keyReleasedCode] = false;
 				}
 			}			
+			
+			// Update shortcuts
+			
+			if(this.keyPressed)
+			{
+				if(this.keyPressedCode == constants.keyboardShortcutEnable) { this.shortcutEnabled = true; }
+				
+
+				if(this.keyPressedCode == constants.keyboardShortcutInsert) { this.insertProgramLinePressed = true; }
+				else if(this.keyPressedCode == constants.keyboardShortcutDelete) { this.deleteProgramLinePressed = true; }
+				
+				
+				if(this.shortcutEnabled)
+				{
+					if(this.keyPressedCode == constants.keyboardShortcutRun && this.state == states.stateStopped)
+					{
+						this.runPressed = true;
+					}
+					else if(this.keyPressedCode == constants.keyboardShortcutStep)
+					{
+						this.stepPressed = true;
+					}
+					else if(this.keyPressedCode == constants.keyboardShortcutReset)
+					{
+						this.resetPressed = true;
+					}
+					else if(this.keyPressedCode == constants.keyboardShortcutStop && this.state == states.stateRunning)
+					{
+						this.stopPressed = true;
+					}					
+					else if(this.keyPressedCode == constants.keyboardShortcutDebug)
+					{
+						this.showOnRunPressed = true;
+					}					
+					else if(this.keyPressedCode == constants.keyboardShortcutLoad)
+					{
+						this.loadProjectPressed = true;
+					}					
+					else if(this.keyPressedCode == constants.keyboardShortcutSave)
+					{
+						this.saveProjectPressed = true;
+					}					
+					else if(this.keyPressedCode == constants.keyboardShortcutNew)
+					{
+						this.newProjectPressed = true;
+					}					
+					else if(this.keyPressedCode == constants.keyboardShortcutConfiguration)
+					{
+						if(this.currentDialog == dialogId.none) { this.DialogOpen(dialogId.configuration); }
+					}					
+					else if(this.keyPressedCode == constants.keyboardShortcutAbout)
+					{
+						if(this.currentDialog == dialogId.none) { this.DialogOpen(dialogId.about); }
+					}					
+					else if(this.keyPressedCode == constants.keyboardShortcutHelp)
+					{
+						if(this.currentDialog == dialogId.none) { this.DialogOpen(dialogId.help); }
+					}					
+				}
+			}
+			
+			if(this.keyReleased)
+			{
+				if(this.keyReleasedCode == constants.keyboardShortcutEnable) { this.shortcutEnabled = false; }
+			}
 
 			if(this.state == states.stateRunning)
 			{
@@ -3049,7 +3137,8 @@
 			}
 			else // this.state == states.stateStopped
 			{
-				// Update program editor
+				// Update program editor								
+					
 				
 				if(document.activeElement != null)
 				{
@@ -3991,30 +4080,36 @@
 							var screenPixelX = screenPositionX + x;
 							var screenPixelY = screenPositionY + y;
 							
-							var imagePixelAddress = imageAddress + 3 + ((flipY ? imageHeight - y - 1: y) * imageWidth + (flipX ? imageWidth - x - 1: x)) * imageDepth;
-							var screenPixelAddress = this.ScreenGetPixelsStartAddress() + configuration.screenDepth * (screenPixelY * configuration.screenWidth + screenPixelX);
-							
-							var imagePixelR = this.memory[imagePixelAddress + 0];
-							var imagePixelG = this.memory[imagePixelAddress + 1];
-							var imagePixelB = this.memory[imagePixelAddress + 2];
-							
-							var discard = false;
-							
-							if(this.memory[this.screenMemoryAddress + this.screenControlMemoryColorKeyEnabledOffset] != 0)
-							{
-								var keyColorR = this.memory[this.screenMemoryAddress + this.screenControlMemoryColorKeyOffset];
-								var keyColorG = this.memory[this.screenMemoryAddress + this.screenControlMemoryColorKeyOffset + 1];
-								var keyColorB = this.memory[this.screenMemoryAddress + this.screenControlMemoryColorKeyOffset + 2];
+							if(screenPixelX >= 0 && screenPixelX < configuration.screenWidth &&
+							   screenPixelY >= 0 && screenPixelY < configuration.screenHeight)
+						   {
+								var imagePixelAddress = imageAddress + 3 + ((flipY ? imageHeight - y - 1: y) * imageWidth + (flipX ? imageWidth - x - 1: x)) * imageDepth;
+								var screenPixelAddress = this.ScreenGetPixelsStartAddress() + configuration.screenDepth * (screenPixelY * configuration.screenWidth + screenPixelX);
 								
-								discard = (imagePixelR == keyColorR && imagePixelG == keyColorG &&  imagePixelB == keyColorB);
-							}
+								var imagePixelR = this.memory[imagePixelAddress + 0];
+								var imagePixelG = this.memory[imagePixelAddress + 1];
+								var imagePixelB = this.memory[imagePixelAddress + 2];
+								
+								var colorKeyDiscard = false;
+								
+								if(this.memory[this.screenMemoryAddress + this.screenControlMemoryColorKeyEnabledOffset] != 0)
+								{
+									var keyColorR = this.memory[this.screenMemoryAddress + this.screenControlMemoryColorKeyOffset];
+									var keyColorG = this.memory[this.screenMemoryAddress + this.screenControlMemoryColorKeyOffset + 1];
+									var keyColorB = this.memory[this.screenMemoryAddress + this.screenControlMemoryColorKeyOffset + 2];
+									
+									colorKeyDiscard = (imagePixelR == keyColorR && imagePixelG == keyColorG &&  imagePixelB == keyColorB);
+								}
+								
+								if(!colorKeyDiscard)
+								{							
+									this.memory[screenPixelAddress + 0] = imagePixelR;
+									this.memory[screenPixelAddress + 1] = imagePixelG;
+									this.memory[screenPixelAddress + 2] = imagePixelB;
+								}
+
+						   }
 							
-							if(!discard)
-							{							
-								this.memory[screenPixelAddress + 0] = imagePixelR;
-								this.memory[screenPixelAddress + 1] = imagePixelG;
-								this.memory[screenPixelAddress + 2] = imagePixelB;
-							}
 							
 						}
 					}
@@ -4654,9 +4749,31 @@
 	
 	function OnKeyPressed(e)
 	{	
-		// Prevents spacebar from scrolling
+		// Prevents default page scrolling
 		
-		if(e.keyCode == 32 && e.target == document.body) { e.preventDefault(); }
+		if((e.keyCode == constants.keyboardSpaceCode ||
+			e.keyCode == constants.keyboardShortcutEnable) && e.target == document.body) { e.preventDefault(); }
+		
+				
+		
+		if(machine.shortcutEnabled)
+		{
+			if( e.keyCode == constants.keyboardShortcutRun ||
+				e.keyCode == constants.keyboardShortcutStep ||
+				e.keyCode == constants.keyboardShortcutStop ||
+				e.keyCode == constants.keyboardShortcutReset ||
+				e.keyCode == constants.keyboardShortcutDebug ||
+				e.keyCode == constants.keyboardShortcutLoad ||
+				e.keyCode == constants.keyboardShortcutSave ||
+				e.keyCode == constants.keyboardShortcutNew ||
+				e.keyCode == constants.keyboardShortcutConfiguration ||
+				e.keyCode == constants.keyboardShortcutHelp ||
+				e.keyCode == constants.keyboardShortcutAbout)
+			{
+				e.preventDefault();
+			}
+		}
+		
 	
 		machine.OnKeyPressed(e.keyCode);
 	}

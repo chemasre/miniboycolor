@@ -36,6 +36,21 @@ input
 	background-color: rgb(50, 0, 50);
 }
 
+.shortcut
+{
+	font-style:normal;
+	text-decoration:underline;
+/*	display:inline;
+	position:relative;
+	left:0pt;
+	top:10pt;
+	font-weight:bold;
+	padding:4pt;
+	background:white;
+	font-style:normal;
+	color:black;
+*/
+}
 
 
 .topMenu, .bottomMenu

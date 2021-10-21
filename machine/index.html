@@ -10,18 +10,18 @@
 </head>
 <body class="backgroundBody" onload="Main()">
 <div class="topMenu noMargin">
-	<button id="NewProject"  onclick="machine.OnNewProjectPressed()">New project</button>
-	<button id="LoadProject"  onclick="machine.OnLoadProjectPressed()">Load project</button>
-	<button id="SaveProject"  onclick="machine.OnSaveProjectPressed()">Save project</button>|
-	<button id="Configuration"  onclick="machine.OnDialogOpenPressed(dialogId.configuration)">Configuration</button>|	
-	<button id="ResetProcessor" onclick="machine.OnResetProcessorPressed()">Reset</button>
-	<button id="Run"  onclick="machine.OnRunPressed()">Run</button>
-	<button id="Step" onclick="machine.OnStepPressed()">Step</button>
-	<button id="Stop"  onclick="machine.OnStopPressed()">Stop</button>
-	<button id="ShowOnRun" onclick="machine.OnShowOnRunPressed()">Debug</button>
+	<button id="NewProject"  onclick="machine.OnNewProjectPressed()"><em class="shortcut">N</em>ew project</button>
+	<button id="LoadProject"  onclick="machine.OnLoadProjectPressed()"><em class="shortcut">L</em>oad project</button>
+	<button id="SaveProject"  onclick="machine.OnSaveProjectPressed()"><em class="shortcut">S</em>ave project</button>|
+	<button id="Configuration"  onclick="machine.OnDialogOpenPressed(dialogId.configuration)"><em class="shortcut">C</em>onfiguration</button>|	
+	<button id="ResetProcessor" onclick="machine.OnResetProcessorPressed()"><em class="shortcut">R</em>eset</button>
+	<button id="Run"  onclick="machine.OnRunPressed()"><em class="shortcut">R</em>un</button>
+	<button id="Step" onclick="machine.OnStepPressed()">Ste<em class="shortcut">p</em></button>
+	<button id="Stop"  onclick="machine.OnStopPressed()">S<em class="shortcut">t</em>op</button>
+	<button id="ShowOnRun" onclick="machine.OnShowOnRunPressed()"><em class="shortcut">D</em>ebug</button>
 	<div class="floatRight">
-	<button id="About" onclick="machine.OnDialogOpenPressed(dialogId.about)">About</button>|
-	<button id="OpenHelp"  onclick="machine.OnDialogOpenPressed(dialogId.help)">Help</button>
+	<button id="About" onclick="machine.OnDialogOpenPressed(dialogId.about)"><em class="shortcut">A</em>bout</button>|
+	<button id="OpenHelp"  onclick="machine.OnDialogOpenPressed(dialogId.help)"><em class="shortcut">H</em>elp</button>
 	</div>
 </div>
 <div id="mainBox">
@@ -132,6 +132,7 @@
 <button onclick="machine.OnHelpShowPressed(helpId.reference)">Reference</button>
 <button onclick="machine.OnHelpShowPressed(helpId.asciiTable)">ASCIITable</button>
 <button onclick="machine.OnHelpShowPressed(helpId.frequenciesTable)">FrequenciesTable</button>
+<button onclick="machine.OnHelpShowPressed(helpId.shortcuts)">Shortcuts</button>
 <button id="CloseDialog" class="floatRight" onclick="machine.OnDialogClosePressed()">Close</button>
 </div>
 <div id="helpDialogContents" class="preformated"></div>
