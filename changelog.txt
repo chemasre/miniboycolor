@@ -26,4 +26,8 @@ Versión 2.14
 - La instrucción _DIBUJA_IMAGEN_ incluye ahora soporte para color key con instrucciones _PON_USAR_CLAVE_COLOR_, _PON_CLAVE_COLOR_, _PON_CLAVE_COLOR_R_, _PON_CLAVE_COLOR_G_, _PON_CLAVE_COLOR_B_
 - La instrucción _DIBUJA_IMAGEN_ incluye ahora soporte para flip en X e Y con instrucciones _PON_INVERTIR_X_ y _PON_INVERTIR_Y_
 - Añadido proyecto de prueba para nuevas funciones de _DIBUJA_IMAGEN_
+
+2.18
+
+- Añadidos shortcuts
  
