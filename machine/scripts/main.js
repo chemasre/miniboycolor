@@ -3925,12 +3925,12 @@
 				{	
 					var pixelAddress = pixelsStartAddress + i * configuration.screenDepth;
 					
-					this.memory[pixelAddress + 0] = this.memory[this.screenControlMemoryClearColorOffset + 0];
+					this.memory[pixelAddress + 0] = this.memory[this.screenMemoryAddress + this.screenControlMemoryClearColorOffset + 0];
 					
 					if(configuration.screenDepth == 3)
 					{
-						this.memory[pixelAddress + 1] = this.memory[this.screenControlMemoryClearColorOffset + 1];
-						this.memory[pixelAddress + 2] = this.memory[this.screenControlMemoryClearColorOffset + 2];
+						this.memory[pixelAddress + 1] = this.memory[this.screenMemoryAddress + this.screenControlMemoryClearColorOffset + 1];
+						this.memory[pixelAddress + 2] = this.memory[this.screenMemoryAddress + this.screenControlMemoryClearColorOffset + 2];
 					}
 				}
 			}
