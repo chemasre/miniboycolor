@@ -1,5 +1,5 @@
 
-var texts =
+var textsEN =
 {
     about:
     
@@ -559,22 +559,22 @@ ___________________________
     Example:
 
     MULTIPLY @2 3 A
-        |       | | |
-        |       | | +-- Argument3
-        |       | +---- Argument2
-        |       +------ Argument1
-        +-------------- Opcode
+        |     | | |
+        |     | | +-- Argument3
+        |     | +---- Argument2
+        |     +------ Argument1
+        +------------ Opcode
 
 2.- Input and output arguments
 
-	Each of the instruction's arguments can be
-	an input or an output argument.
+    Each of the instruction's arguments can be
+    an input or an output argument.
 
-	In general, input arguments are used to get the
-	values that will be used by the operation.
-	
-	Output arguments, in turn, indicate where the
-	operation's results will be stored
+    In general, input arguments are used to get the
+    values that will be used by the operation.
+    
+    Output arguments, in turn, indicate where the
+    operation's results will be stored
 
     Example:
         
@@ -584,10 +584,10 @@ ___________________________
               | +---- Input argument
               +------ Output argument
 
-	In this case, the value of the A register and the
-	number 3 will be obtained, the values will be
-	multiplied and the result will be stored in the
-	memory cell @2
+    In this case, the value of the A register and the
+    number 3 will be obtained, the values will be
+    multiplied and the result will be stored in the
+    memory cell @2
 
 3.- Argument types
 
@@ -595,9 +595,9 @@ ___________________________
 
     3.1) Literal:
        
-	    Represents a number. Can be written with decimal
-		or hexadecimal notation. When written with
-		hexadecimal notation, it should begin with '0x'.
+        Represents a number. Can be written with decimal
+        or hexadecimal notation. When written with
+        hexadecimal notation, it should begin with '0x'.
        
         Examples:
        
@@ -605,21 +605,21 @@ ___________________________
                     | 
                     |
                     +---- Literal with value 3 written
-					      with decimal notation.
+                          with decimal notation.
                             
         MULTIPLY @2 0xF2 A
                      | 
                      |
                      +---- Literal with value 242
                            written with hexadecimal
-						   notation
+                           notation
        
     3.2) Register:
 
         Represent a processor's register.
         
         To reference them we use the name of the
-		register.
+        register.
         
         Example:
         
@@ -630,7 +630,7 @@ ___________________________
     3.3) Memory cells:
 
         They represent a memory cell. They can be referenced
-		in a direct form or with base and offset.
+        in a direct form or with base and offset.
 
         a) Direct form:
             
@@ -647,8 +647,8 @@ ___________________________
         b) With base and offset:
   
             We write base[offset], where base is the starting
-			address and offset how many memory cells we should
-			jump from that point.
+            address and offset how many memory cells we should
+            jump from that point.
             
             Example:
 
@@ -656,11 +656,11 @@ ___________________________
                       |   
                       |   
                       +------ Memory cell with offset 2
-				              and base 4
+                              and base 4
             
             If we represent the example in memory we
-			observe that we are referencing the cell with
-			address 6
+            observe that we are referencing the cell with
+            address 6
             
                        +------------------+
                     3  |                  |
@@ -677,7 +677,7 @@ ___________________________
             Notes:
             
                 Base and/or offset can be literals, registers or
-				memory cells referenced in direct form.
+                memory cells referenced in direct form.
             
                 Examples:
                 
@@ -685,44 +685,44 @@ ___________________________
                            |
                            |
                            +------ Memory cell that can be
-						           obtained jumping two cells
-								   from the memory address
-								   contained in memory cell 3
+                                   obtained jumping two cells
+                                   from the memory address
+                                   contained in memory cell 3
                 
                 MULTIPLY @3[@2] 3 A
                            |
                            |
                            +------ Memory cell that can be
-						           obtained jumping the number
-								   of cells contained in memory
-								   cell 2 starting from the 
-								   address contained in memory
-								   cell 3.
-								   
+                                   obtained jumping the number
+                                   of cells contained in memory
+                                   cell 2 starting from the 
+                                   address contained in memory
+                                   cell 3.
+                                   
                 
                 MULTIPLY B[C] 3 A
                           |
                           |
                           +------ Memory cell that can be
-					               obtained jumping the number
-								   of cells contained in C
-								   register starting from the 
-								   address contained in B
-								   register.
+                                   obtained jumping the number
+                                   of cells contained in C
+                                   register starting from the 
+                                   address contained in B
+                                   register.
                 
                 MULTIPLY @3[B] 3 a
                            |
                            |
                            +------ Memory cell that can be
-					               obtained jumping the number
-								   of cells contained in B
-								   register starting from the 
-								   address contained in memory
-								   cell 3.
+                                   obtained jumping the number
+                                   of cells contained in B
+                                   register starting from the 
+                                   address contained in memory
+                                   cell 3.
             
                    
                 On the other hand the base can be ommitted.
-				In that case 0 will be used as base.
+                In that case 0 will be used as base.
 
                 Ejemplo:
                 
@@ -1199,7 +1199,7 @@ depuración.
 |    126     |     ~     |
 +============+===========+
 `,
-	frequenciesTable:
+    frequenciesTable:
 `+====================================+
 |                                    |
 |        Tabla de frecuencias        |
@@ -1281,7 +1281,7 @@ depuración.
 +====================================+
 `,
 
-	shortcuts:
+    shortcuts:
 `+====================================+
 |          MENÚ PRINCIPAL            |
 +====================================+

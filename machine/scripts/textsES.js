@@ -1,5 +1,5 @@
 
-var texts =
+var textsES =
 {
     about:
     

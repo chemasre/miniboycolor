@@ -16,6 +16,7 @@
 		inputOutputHeight: 64,
 		themeColors: [ "rgb(255,127,204)", "rgb(80,200,80)", "rgb(127,127,255)", "rgb(200,200,80)" ],
 		showOnRun: false,
+		language: 1
 		
 	}
 
@@ -99,10 +100,14 @@
 		
 	}
 	
+	// Texts
+	
+	var texts = [ textsES, textsEN ];
+	
 						  
 
 	// Enums
-
+	
 	var states =
 	{
 		stateStopped: 0,
@@ -853,7 +858,7 @@
 		{
 			document.getElementById("aboutDialogBox").style.display = "block";	
 			var contents = document.getElementById("aboutDialogContents");
-			contents.innerHTML = texts.about;
+			contents.innerHTML = texts[preferences.language].about;
 			contents.scrollTop = 0;
 			
 		}
@@ -884,7 +889,7 @@
 									// }
 								// }
 			
-			// fetch('./texts/manual.txt').then(onFetchReady);
+			// fetch('./texts[preferences.language]/manual.txt').then(onFetchReady);
 			var text = "+-------------------------------------------------------------+\n"
 			text +=    "|                        Index                                |\n"
 			text +=    "+-------------------------------------------------------------+\n"
@@ -913,7 +918,7 @@
 				for(var j = 0; j < instructionInfo[i].argCount; j++) { text += "arg" + (j + 1) + "   "; }
 				text += "\n";
 				text += "\n";
-				text += texts.helpInstructions[i];
+				text += texts[preferences.language].helpInstructions[i];
 				text += "\n";
 				text += "\n";
 				if(instructionInfo[i].opCodeNames.length > 1)
@@ -968,7 +973,7 @@
 			
 			if(this.helpCurrentId == helpId.manual)
 			{
-				text = texts.helpManual;
+				text = texts[preferences.language].helpManual;
 			}
 			else if(this.helpCurrentId == helpId.reference)
 			{
@@ -976,15 +981,15 @@
 			}
 			else if(this.helpCurrentId == helpId.asciiTable)
 			{
-				text = texts.asciiTable;
+				text = texts[preferences.language].asciiTable;
 			}
 			else if(this.helpCurrentId == helpId.frequenciesTable)
 			{
-				text = texts.frequenciesTable;
+				text = texts[preferences.language].frequenciesTable;
 			}
 			else // this.helpCurrentId == helpId.shortcuts)
 			{
-				text = texts.shortcuts;
+				text = texts[preferences.language].shortcuts;
 			}
 			
 			var contents = document.getElementById("helpDialogContents");
@@ -1242,7 +1247,7 @@
 		{
 			this.commentArea = document.getElementById("comment");
 			
-			this.commentArea.value = texts.commentDefault;
+			this.commentArea.value = texts[preferences.language].commentDefault;
 			
 		}
 		
