@@ -12,24 +12,19 @@ var texts =
 
 
 
-Una consola pedagógica desarrollada como herramienta para la enseñanza
-de fundamentos de programación a alumnos de Ciclos Formativos de Grado
-Superior.
+A pedagogic console developed as a tool for teaching programming
+foundations to vocational training students.
 
-Inspirada en <a href="https://docencia.ac.upc.edu/eines/MR/">"La Máquina Rudimentaria"</a>, un proyecto del departamento
-de Arquitectura de Computadores de la Universitat Politècnica de
-Catalunya.
+Inspired by <a href="https://docencia.ac.upc.edu/eines/MR/">"The Rudimentary Machine"</a>, a project of the Computer
+Architecture Department of the Polytechnical University of Catalonia.
 
-Diseñada y programada por José Manuel (Chema) Solís.
+Designed and programmed by José Manuel (Chema) Solís.
 
-
-Dedicada a Rubén y a Judit.
-
-
+Dedicated to Rubén and Judit.
 
 +----------------------------------------------------------------------+
 |                                                                      |
-|                           LICENCIA                                   |
+|                           LICENSE                                    |
 |                                                                      |
 |     Attribution-NonCommercial-NoDerivatives 4.0 International        |
 |                                                                      |
@@ -555,194 +550,186 @@ ___________________________
 |                        Manual                               |
 +-------------------------------------------------------------+
 
-1.- Estructura de una instrucción
+1.- Instruction's structure
 
-    Las instrucciones tienen esta forma
+    Instructions have the form
 
-    CODIGOOPERACION argumento1 argumento2 ...
+    OPCODE argument1 argument2 ...
 
-    Ejemplo:
+    Example:
 
-    MULTIPLICA @2 3 A
+    MULTIPLY @2 3 A
         |       | | |
-        |       | | +-- Argumento3
-        |       | +---- Argumento2
-        |       +------ Argumento1
-        +-------------- Código de operación
+        |       | | +-- Argument3
+        |       | +---- Argument2
+        |       +------ Argument1
+        +-------------- Opcode
 
-2.- Argumentos de entrada y de salida
+2.- Input and output arguments
 
-    Cada uno de los argumentos de una instrucción
-    puede ser de entrada o de salida.
+	Each of the instruction's arguments can be
+	an input or an output argument.
 
-    En general, los argumentos de entrada se utilizan
-    para obtener los valores que se van a usar en la
-    operación.
+	In general, input arguments are used to get the
+	values that will be used by the operation.
+	
+	Output arguments, in turn, indicate where the
+	operation's results will be stored
 
-    Los argumentos de salida indican dónde se
-    almacenarán los resultados de la operación
-
-    Ejemplo:
+    Example:
         
-    MULTIPLICA @2 3 A
-                | | |
-                | | +-- Argumento de entrada
-                | +---- Argumento de entrada
-                +------ Argumento de salida
+    MULTIPLY @2 3 A
+              | | |
+              | | +-- Input argument
+              | +---- Input argument
+              +------ Output argument
 
-    En este caso, se tomará el valor del registro A
-    y el número 3, se multiplicarán entre sí y el
-    resultado se almacenará en la celda de memoria @2
+	In this case, the value of the A register and the
+	number 3 will be obtained, the values will be
+	multiplied and the result will be stored in the
+	memory cell @2
 
-3.- Tipos de argumento
+3.- Argument types
 
-    Los argumentos pueden ser literales, registros
-    o celdas de memoria.
+    Arguments can be literals, registers or memory cells.
 
     3.1) Literal:
        
-        Representa un número. Puede escribirse en
-        decimal o en hexadecimal. En este último caso
-        debe empezar por '0x'.
+	    Represents a number. Can be written with decimal
+		or hexadecimal notation. When written with
+		hexadecimal notation, it should begin with '0x'.
        
-        Ejemplos:
+        Examples:
        
-        MULTIPLICA @2 3 A
-                      | 
-                      |
-                      +---- Literal con valor 3
-                            escrito en decimal
+        MULTIPLY @2 3 A
+                    | 
+                    |
+                    +---- Literal with value 3 written
+					      with decimal notation.
                             
-        MULTIPLICA @2 0xF2 A
-                       | 
-                       |
-                       +---- Literal con valor 3
-                             escrito en hexadecimal
+        MULTIPLY @2 0xF2 A
+                     | 
+                     |
+                     +---- Literal with value 242
+                           written with hexadecimal
+						   notation
        
-    3.2) Registro:
+    3.2) Register:
 
-        Representan un registro del procesador.
+        Represent a processor's register.
         
-        Para referenciarlos tenemos que usar el nombre
-        del registro.
+        To reference them we use the name of the
+		register.
         
-        Ejemplo:
+        Example:
         
-        MULTIPLICA @2 3 A
-                        |
-                        +-- Registro A
+        MULTIPLY @2 3 A
+                      |
+                      +-- A register
 
-    3.3) Celdas de memoria:
+    3.3) Memory cells:
 
-        Representan una celda de memoria. Pueden referenciarse de
-        forma directa o usando base y desplazamiento:
+        They represent a memory cell. They can be referenced
+		in a direct form or with base and offset.
 
-        a) Forma directa:
+        a) Direct form:
             
-           Se antepone @ a la dirección de la celda.
+           We prepend @ to the cell's address
            
-           Ejemplo:
+           Example:
            
-            MULTIPLICA  @2 3 A
-                        |   
-                        |   
-                        +------ Celda de memoria
-                                que está en la
-                                dirección 2
+            MULTIPLY  @2 3 A
+                       |   
+                       |   
+                       +------ Memory cell with
+                               address 2
            
-        b) Con base y desplazamiento:
+        b) With base and offset:
   
-            Se escribe base[desplazamiento], donde base es una
-            dirección de partida y desplazamiento es cuántas
-            posiciones de memoria a partir de la dirección base
-            nos tenemos que desplazar.
+            We write base[offset], where base is the starting
+			address and offset how many memory cells we should
+			jump from that point.
             
-            Ejemplo:
+            Example:
 
-            MULTIPLICA 4[2] 3 A
-                        |   
-                        |   
-                        +------ Celda de memoria
-                                con desplazamiento 2
-                                y dirección base 4                              
+            MULTIPLY 4[2] 3 A
+                      |   
+                      |   
+                      +------ Memory cell with offset 2
+				              and base 4
             
-            Si representamos en la memoria la base y el
-            desplazamiento observamos que estamos haciendo
-            referencia a la celda de memoria 6
+            If we represent the example in memory we
+			observe that we are referencing the cell with
+			address 6
             
                        +------------------+
                     3  |                  |
                        +------------------+
          base   +   4  |                  |
                 |      +------------------+
-         despla |   5  |                  |
-         zamien |      +------------------+
-         to     +-> 6  |                  |
+         offset |   5  |                  |
+                |      +------------------+
+                +-> 6  |                  |
                        +------------------+
                     7  |                  |
                        +------------------+
                 
-            Observaciones:
+            Notes:
             
-                Base y/o desplazamiento pueden ser literales,
-                  registros o celdas de memoria referenciadas en
-                  forma directa.
+                Base and/or offset can be literals, registers or
+				memory cells referenced in direct form.
             
-                Ejemplos:
+                Examples:
                 
-                MULTIPLICA @3[2] 3 A
-                             |
-                             |
-                             +------ Celda de memoria que
-                                     se obtiene desplazándose
-                                     dos posiciones a partir
-                                     de la dirección de celda
-                                     contenida en la celda 3
+                MULTIPLY @3[2] 3 A
+                           |
+                           |
+                           +------ Memory cell that can be
+						           obtained jumping two cells
+								   from the memory address
+								   contained in memory cell 3
                 
-                MULTIPLICA @3[@2] 3 A
-                             |
-                             |
-                             +------ Celda de memoria que
-                                     se obtiene desplazándose
-                                     las posiciones contenidas
-                                     en la celda 2 a partir
-                                     de la dirección de celda
-                                     contenida en la celda 3
+                MULTIPLY @3[@2] 3 A
+                           |
+                           |
+                           +------ Memory cell that can be
+						           obtained jumping the number
+								   of cells contained in memory
+								   cell 2 starting from the 
+								   address contained in memory
+								   cell 3.
+								   
                 
-                MULTIPLICA B[C] 3 A
-                             |
-                             |
-                             +------ Celda de memoria que
-                                     se obtiene desplazándose
-                                     las posiciones contenidas
-                                     en el registro C a partir
-                                     de la dirección de celda
-                                     contenida en el registro B
+                MULTIPLY B[C] 3 A
+                          |
+                          |
+                          +------ Memory cell that can be
+					               obtained jumping the number
+								   of cells contained in C
+								   register starting from the 
+								   address contained in B
+								   register.
                 
-                MULTIPLICA @3[B] 3 a
-                             |
-                             |
-                             +------ Celda de memoria que
-                                     se obtiene desplazándose
-                                     las posiciones contenidas
-                                     en el registro B a partir
-                                     de la dirección de celda
-                                     contenida en la posición
-                                     de memoria 3
+                MULTIPLY @3[B] 3 a
+                           |
+                           |
+                           +------ Memory cell that can be
+					               obtained jumping the number
+								   of cells contained in B
+								   register starting from the 
+								   address contained in memory
+								   cell 3.
             
                    
-                Por otro lado la base puede omitirse. En ese caso
-                se toma como valor de la base 0 y la celda
-                referenciada será la que tenga como dirección
-                el desplazamiento.
+                On the other hand the base can be ommitted.
+				In that case 0 will be used as base.
 
                 Ejemplo:
                 
-                MULTIPLICA [10] 3 a
-                             |
-                             |
-                             +------ Celda de memoria con
-                                     dirección 10
+                MULTIPLY [10] 3 a
+                          |
+                          |
+                          +------ Memory cell with address 10
             
             `,
     
