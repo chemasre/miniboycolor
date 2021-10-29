@@ -1255,6 +1255,12 @@
 		{
 			var text = "comment\n";
 			text += this.commentArea.value;
+
+			if(text.charAt(text.length - 1) != '\n')
+			{
+				text += "\n";
+			}
+			
 			return text;
 		}
 		
@@ -1264,7 +1270,7 @@
 			
 			var comment = "";
 			
-			for(var i = 1; i < lines.length; i ++) { comment += lines[i] + "\n"; }
+			for(var i = 1; i < lines.length; i ++) { comment += lines[i] + (i == lines.length - 1 ? "" : "\n"); }
 			
 			this.commentArea.value = comment;
 		}
