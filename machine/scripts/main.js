@@ -767,7 +767,15 @@
 		
 		DeveloperModeStart()
 		{
+			var enabled = MachineUtils.GetCookie("DeveloperMode");
+			
+			if(enabled != null)
+			{
+				preferences.developerMode = (enabled != 0);
+			}
+			
 			this.DeveloperModeDoApply();
+
 		}
 		
 		DeveloperModeDoApply()
@@ -781,6 +789,7 @@
 				document.body.className = "player";
 			}
 			
+			MachineUtils.SetCookie("DeveloperMode", preferences.developerMode ? 1 : 0);
 		}
 		
 		DeveloperModeToggle()
@@ -2891,6 +2900,9 @@
 			this.helpShowPressed = false;
 			this.helpShowPressedId = helpId.none;
 			this.toggleDeveloperModePressed = false;
+			this.run = false;
+			this.stop = false;
+			this.reset = false;
 			
 			this.buttonNewProject = document.getElementById("NewProject");
 			this.buttonLoadProject = document.getElementById("LoadProject");
@@ -2906,7 +2918,6 @@
 			
 			this.buttonStop.style.opacity = 0.35;
 			
-			this.casingButtonPlay = document.getElementById("CasingPlay");
 			this.casingButtonSound = document.getElementById("CasingSound");
 			this.casingButtonLoad = document.getElementById("CasingLoad");
 			this.casingButtonDeveloperMode = document.getElementById("CasingDeveloperMode");
@@ -2966,8 +2977,6 @@
 			
 			this.isStarted = true;
 			
-			
-
 		}
 		
 		PrepareRestart()
@@ -3148,7 +3157,7 @@
 
 
 				
-				if(this.stopPressed || this.runTogglePressed)
+				if(this.stopPressed || this.runTogglePressed || this.stop)
 				{
 					this.nextState = states.stateStopped;
 				}
@@ -3330,7 +3339,10 @@
 				
 				
 				
-				if(this.applyConfigurationPressed || this.resetPressed || this.clearProgramPressed || this.clearMemoryLabelsPressed || this.newProjectPressed || this.loadProjectPressed || this.saveProjectPressed || this.runTogglePressed)
+				if(	this.applyConfigurationPressed || this.resetPressed ||
+					this.clearProgramPressed || this.clearMemoryLabelsPressed ||
+					this.newProjectPressed || this.loadProjectPressed ||
+					this.saveProjectPressed || this.runTogglePressed || this.reset)
 				{
 					if(this.applyConfigurationPressed)
 					{
@@ -3386,7 +3398,7 @@
 					}
 					else if(this.loadProjectPressed)
 					{
-						this.ProjectLoad();
+						this.ProjectLoad(false);
 					}
 					else if(this.saveProjectPressed)
 					{
@@ -3394,15 +3406,23 @@
 					}
 					else
 					{
-						if(this.resetPressed)
+						if(this.resetPressed || this.reset)
 						{
-							var result = confirm("Se reiniciarán los contenidos de la memoria y los registros del procesador ¿estás seguro/a?");
-							if(result)
+							var doReset = true;
+							
+							if(this.resetPressed)							
+							{
+								doReset = confirm("Se reiniciarán los contenidos de la memoria y los registros del procesador ¿estás seguro/a?");
+							}
+							
+							if(doReset)
 							{
 								this.DynamicMemoryReset();
 								this.MemoryReset();
 								this.ProcessorReset();
 							}
+						
+
 						}
 						else if(this.clearMemoryLabelsPressed)
 						{
@@ -3432,7 +3452,7 @@
 				}
 				
 				
-				if(this.runPressed || this.runTogglePressed)
+				if(this.runPressed || this.runTogglePressed || this.run)
 				{
 					var success;
 					
@@ -3631,6 +3651,9 @@
 			this.dialogClosePressed = false;
 			this.helpShowPressed = false;
 			this.toggleDeveloperModePressed = false;
+			this.run = false;
+			this.stop = false;
+			this.reset = false;
 
 			
 			
@@ -4487,7 +4510,31 @@
 			
 		}
 		
+		Run()
+		{
+			this.run = true;
+			this.ProcessorTick();
+		}
 		
+		Stop()
+		{
+			this.stop = true;
+			this.ProcessorTick();
+		}
+		
+		Reset()
+		{
+			this.reset = true;
+			this.ProcessorTick();
+		}
+		
+		ToggleAudio()
+		{
+			this.toggleToneGenerator = true;
+			this.ProcessorTick();
+		}
+		
+	
 		DoEnterStateRunning()
 		{
 			if(!this.step)
@@ -4506,12 +4553,7 @@
 				this.buttonAbout.style.opacity = 0.35;
 				this.buttonHelp.style.opacity = 0.35;
 				
-				this.casingButtonSound.style.opacity = 0.35;
-				this.casingButtonLoad.style.opacity = 0.35;
-				this.casingButtonDeveloperMode.style.opacity = 0.35;
 				
-				
-				this.casingButtonPlay.src = "images/casing-button-stop.png";
 			}
 			
 
@@ -4585,12 +4627,6 @@
 				this.buttonAbout.style.opacity = 1;
 				this.buttonHelp.style.opacity = 1;
 				
-				this.casingButtonSound.style.opacity = 1;
-				this.casingButtonLoad.style.opacity = 1;
-				this.casingButtonDeveloperMode.style.opacity = 1;
-				
-				
-				this.casingButtonPlay.src = "images/casing-button-play.png";
 			}
 			
 			
@@ -4646,7 +4682,7 @@
 			
 		}
 		
-		ProjectLoad()
+		ProjectLoad(runAfterLoad)
 		{
 			var DoLoad1 = function (file)
 			{		
@@ -4677,6 +4713,11 @@
 				machine.DynamicMemoryReset();
 				machine.MemoryReset();
 				machine.ProcessorReset();
+				
+				if(runAfterLoad)
+				{
+					machine.Run();
+				}
 				
 
 			}			
@@ -4762,9 +4803,7 @@
 		
 		OnToggleAudio()
 		{
-			this.toggleToneGenerator = true;
-			
-			this.ProcessorTick();
+			this.ToggleAudio();
 		}
 		
 		
@@ -4844,10 +4883,30 @@
 
 		}
 		
-		OnToggleDeveloperModePressed()
+		
+		OnCasingResetPressed()
 		{
-			this.toggleDeveloperModePressed = true;
-			this.ProcessorTick();			
+			this.Stop();
+			this.Reset();
+			this.Run();
+		}
+		
+		OnCasingLoadPressed()
+		{
+			this.Stop();
+			this.ProjectLoad(true);
+		}
+		
+		OnCasingToggleAudioPressed()
+		{
+			this.Stop();
+			this.ToggleAudio();
+			this.Run();
+		}
+		
+		OnCasingToggleDeveloperModePressed()
+		{
+			this.DeveloperModeToggle();
 		}
 		
 		
