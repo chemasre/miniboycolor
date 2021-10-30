@@ -1,3 +1,5 @@
+/* Common */
+
 @font-face {
   font-family: 'machineFont';
   src: url('fonts/ibmplex.ttf') format('truetype');
@@ -28,6 +30,7 @@ input
 	border-style:none;
 }
 
+
 .title
 {
 	color: white;
@@ -40,16 +43,7 @@ input
 {
 	font-style:normal;
 	text-decoration:underline;
-/*	display:inline;
-	position:relative;
-	left:0pt;
-	top:10pt;
-	font-weight:bold;
-	padding:4pt;
-	background:white;
-	font-style:normal;
-	color:black;
-*/
+
 }
 
 
@@ -90,13 +84,88 @@ input
 	overflow:auto;
 }
 
-.component
+/* Developer mode */
+
+.developer
 {
+	background-color: rgb(51, 51, 51);
+	background-image: url("images/background2.png");
+	background-size: 25%;
+	background-repeat: repeat;
+
+}
+
+.developer .component
+{
+	visibility:visible;
+	display:block;
 	padding:3pt;
 	background-image: url('images/background-component.png');
 	background-repeat: repeat;
 	
 }
+
+
+.developer #screenGrid
+{
+	visibility:visible;
+}
+
+.developer .topMenu
+{
+	visibility:visible;
+}
+
+
+/* Player mode */
+
+.player
+{
+	background-color: rgb(51, 51, 51);
+	background-image: url("images/background1.png");
+	background-attachment:fixed;
+	background-size: 70%;
+	background-repeat: repeat;
+}
+
+.player .machineCasing
+{
+	position:fixed;
+    top:50%;
+    left:33%;
+	transform: translate(-50%, -50%);
+}
+
+.player .component
+{
+	visibility:hidden;
+}
+
+.player #comentario textarea
+{
+	visibility:visible;
+	position:fixed;
+    top:50%;
+    left:66%;
+	width:20%;
+	height:60%;
+	transform: translate(-50%, -50%);
+	color:rgb(40,40,40);
+	background-color: white;
+}
+
+
+.player #screenGrid
+{
+	visibility:hidden;
+}
+
+.player .topMenu
+{
+	visibility:hidden;
+}
+
+
 
 #input, #output
 {
@@ -309,13 +378,6 @@ input
 	color: rgb(90, 90, 90);	
 }
 
-.backgroundBody
-{
-	background-color: rgb(51, 51, 51);
-	background-image: url("images/background2.png");
-	background-size: 25%;
-	background-repeat: repeat;
-}
 
 .backgroundField
 {
@@ -372,16 +434,6 @@ input
 }
 
 
-.bordered
-{
-	/*
-	border-style:solid;
-	border-width:1pt;
-	border-color:black;
-	*/
-}
-
-
 .notbordered
 {
 	border-style:none
@@ -398,6 +450,29 @@ input
 				inset 0 -0.2em 0.2em rgba(0,0,0,0.5),
 				inset 0 0.2em 0.2em rgba(240,240,240,0.8);
 
+}
+
+.machineMenu table
+{
+	padding-left: 16pt;
+	padding-right: 8pt;
+	padding-top: 0pt;
+	padding-bottom: 0pt,
+}
+
+.machineMenu .button
+{
+	width:20pt;
+	padding:2pt;
+	
+	background-color: rgba(40,40,40,0.1);
+	color: rgb(120,120,120);
+	box-shadow: 0pt 0pt 0pt 0pt rgba(0,0,0,0.3),
+				inset 0 -0.2em 0.2em rgba(0,0,0,0.3),
+				inset 0 0.2em 0.2em rgba(240,240,240,0.3);
+	border-style:none;
+	border-radius:3pt;
+	
 }
 
 

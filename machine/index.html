@@ -9,7 +9,7 @@
 <script src="scripts/textsEN.js"></script>
 <script src="scripts/main.js"></script>
 </head>
-<body class="backgroundBody" onload="Main()">
+<body class="player" onload="Main()">
 <div class="topMenu noMargin">
 	<button id="NewProject"  onclick="machine.OnNewProjectPressed()"><em class="shortcut">N</em>ew project</button>
 	<button id="LoadProject"  onclick="machine.OnLoadProjectPressed()"><em class="shortcut">L</em>oad project</button>
@@ -28,27 +28,42 @@
 <div id="mainBox">
 <div class="row">
 <div class="column">
-<div id="Pantalla" class="bordered smoothborder padded margined backgroundMachine machineCasing" >
+<div id="Pantalla" class="smoothborder padded margined backgroundMachine machineCasing" >
 <div id="screenBox" class="fullwidth">
 	<canvas id="screen" class="noMargin noPadding"></canvas>
 	<canvas id="screenGrid" class="noMargin noPadding"></canvas>
 </div>
 <div class="centered"><canvas id="output" class="bottommargined"></canvas></div>
 <div class="centered"><canvas id="input" class="bottommargined"></canvas></div>
-<div class="rightaligned"><img id="logo" src="images/logo.png"></div>
 
-<div class="rightAligned">
-<div id="themeChooser">
-<input type="radio" id="color1" name="color" value="1" onclick="machine.OnChangeTheme(0)">
-<input type="radio" id="color2" name="color" value="2" onclick="machine.OnChangeTheme(1)">
-<input type="radio" id="color3" name="color" value="3" onclick="machine.OnChangeTheme(2)">
-<input type="radio" id="color4" name="color" value="4" onclick="machine.OnChangeTheme(3)">
+<div class ="machineMenu">
+<table class="fullwidth">
+<tr>
+<td>
+	<img id="CasingPlay" class="button" src="images/casing-button-play.png" onclick="machine.OnRunTogglePressed()">
+	<img id="CasingLoad" class="button" src="images/casing-button-load.png" onclick="machine.OnLoadProjectPressed()">
+	<img id="CasingSound" class="button" src="images/casing-button-sound-disabled.png" onclick="machine.OnToggleAudio()">
+	<img id="CasingDeveloperMode" class="button" src="images/casing-button-settings.png" onclick="machine.OnToggleDeveloperModePressed()">
+</td>
+<td>
+	<div class="rightaligned"><img id="logo" src="images/logo.png"></div>
+	<div class="rightAligned">
+	<div id="themeChooser">
+	<input type="radio" id="color1" name="color" value="1" onclick="machine.OnChangeTheme(0)">
+	<input type="radio" id="color2" name="color" value="2" onclick="machine.OnChangeTheme(1)">
+	<input type="radio" id="color3" name="color" value="3" onclick="machine.OnChangeTheme(2)">
+	<input type="radio" id="color4" name="color" value="4" onclick="machine.OnChangeTheme(3)">
+	</div>
+	</div>
+</td>
+</tr>
+</table>
 </div>
-</div>
+
 </div>
 </div>
 <div class="column">
-<div id="Processor" class="component bordered padded margined thinRounded shadowed">
+<div id="Processor" class="component padded margined thinRounded shadowed">
 <table>
 <tr>
 	<td><img src="images/processor.png"></td>
@@ -69,15 +84,15 @@
 <table>
 <tr>
 <td>
-<div id="ToneGenerator" class="component bordered margined thinRounded shadowed">
+<div id="ToneGenerator" class="component margined thinRounded shadowed">
 <table>
 <tr><td><img src="images\speaker.png"></td><td><input id="TonoGenerado"></td></tr>
 </table>
-<div class="menu"><button class="notbordered" id="EnableToneGenerator" onclick="machine.OnEnableToneGenerator()">Enable</button></div>
+<div class="menu"><button class="notbordered" id="EnableToneGenerator" onclick="machine.OnToggleAudio()">Enable</button></div>
 </div>
 </td>
 <td>
-<div id="Keyboard" class="component bordered margined thinRounded">
+<div id="Keyboard" class="component margined thinRounded">
 <table>
 <tr><td><img src="images\keyboard.png"></td><td><input id="TeclaPulsada"></td></tr>
 </table>
@@ -86,14 +101,14 @@
 </tr>
 <tr>
 <td>
-<div id="RandomNumberGenerator" class="component bordered margined thinRounded shadowed">
+<div id="RandomNumberGenerator" class="component margined thinRounded shadowed">
 <table>
 <tr><td><img src="images\dice.png"></td><td><input id="ValorAleatorioGenerado"></td></tr>
 </table>
 </div>
 </td>
 <td>
-<div id="Clock" class="component bordered margined thinRounded shadowed">
+<div id="Clock" class="component margined thinRounded shadowed">
 <table>
 <tr><td><img src="images\clock.png"></td><td><input id="TiempoActual"></td></tr>
 </table>
@@ -101,24 +116,24 @@
 </td>
 </tr>
 </table>
-<div id="Comentario" class="component bordered padded margined thinRounded shadowed">
+<div id="Comentario" class="component padded margined thinRounded shadowed">
 <textarea id="comment" class="fullwidth padded" rows="10" cols="30">
 </textarea>
 </div>
 </div>
 
-<div id="Memory" class="component column bordered margined thinRounded shadowed">
+<div id="Memory" class="component column margined thinRounded shadowed">
 <img src="images\memory.png">
 <div class="menu"><button id="ClearMemoryLabels" class="notbordered" onclick="machine.OnClearMemoryLabelsPressed()">Clear</button></div>
 <table id="MemoryTable" class="padded">
-<tr class="backgroundFieldBase"><td><input type="text" id="ML00000" class="inputlabel notbordered rightaligned backgroundField">:</td><td>0</td><td><input type="text" id="M00000"></td></tr>
+<tr class="backgroundFieldBase"><td><input type="text" id="ML00000" class="inputlabel notrightaligned backgroundField">:</td><td>0</td><td><input type="text" id="M00000"></td></tr>
 </table>
 </div>
-<div id="Program" class="component column bordered margined thinRounded margined shadowed">
+<div id="Program" class="component column margined thinRounded margined shadowed">
 <img src="images\program.png">
 <div class="menu"><button id="ClearProgram" class="notbordered" onclick="machine.OnClearProgramPressed()">Clear</button><button class="notbordered" id="Insert" onclick="machine.OnInsertProgramLinePressed()">Insert</button><button class="notbordered" id="Insert" onclick="machine.OnDeleteProgramLinePressed()">Delete</button><button class="notbordered" id="InsertStringData" onclick="machine.OnInsertStringDataPressed()">String</button><button class="notbordered" id="InsertImageData" onclick="machine.OnInsertImageDataPressed()">Image</button></div>
 <table id="ProgramTable" class="padded">
-<tr class="backgroundFieldBase"><td><input type="text" id="PL00000" class="inputlabel notbordered rightaligned backgroundField">:</td><td>0</td><td><input type="text" class="instructionInput" id="P00000"></td></tr>
+<tr class="backgroundFieldBase"><td><input type="text" id="PL00000" class="inputlabel notrightaligned backgroundField">:</td><td>0</td><td><input type="text" class="instructionInput" id="P00000"></td></tr>
 </table>
 </div>
 </div>

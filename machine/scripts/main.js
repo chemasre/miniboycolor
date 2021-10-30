@@ -16,7 +16,9 @@
 		inputOutputHeight: 64,
 		themeColors: [ "rgb(255,127,204)", "rgb(80,200,80)", "rgb(127,127,255)", "rgb(200,200,80)" ],
 		showOnRun: false,
-		language: 1
+		language: 1,
+		developerMode: false,
+		audioEnabled: false
 		
 	}
 
@@ -24,7 +26,7 @@
 
 	var configuration =
 	{
-		version: "2.18",
+		version: "2.19",
 		staticMemorySize: 16,
 		stackMemorySize: 16,
 		screenWidth: 16,
@@ -760,6 +762,34 @@
 		{
 			return this.resourcesLoaded == 11;
 		}
+		
+		// Developer mode start
+		
+		DeveloperModeStart()
+		{
+			this.DeveloperModeDoApply();
+		}
+		
+		DeveloperModeDoApply()
+		{
+			if(preferences.developerMode)
+			{
+				document.body.className = "developer";
+			}
+			else
+			{
+				document.body.className = "player";
+			}
+			
+		}
+		
+		DeveloperModeToggle()
+		{
+			preferences.developerMode = !preferences.developerMode;
+			this.DeveloperModeDoApply();
+			
+		}
+		
 		
 		// Themes
 		
@@ -2360,6 +2390,55 @@
 			
 		}
 		
+		// Audio
+		
+		AudioStart()
+		{
+			this.AudioEnabledDoApply();
+		}
+		
+		AudioEnabledDoApply()
+		{
+			if(preferences.audioEnabled)
+			{
+				if(this.audioContext == null)
+				{
+					this.audioContext = new AudioContext();
+					this.oscillator = [];
+					this.oscillatorConnected = [];
+					
+					for(var i = 0; i < configuration.audioChannels; i++)
+					{
+						this.oscillator[i] = this.audioContext.createOscillator();
+						this.oscillator[i].type = 'square';
+						this.oscillator[i].start();
+						this.oscillatorConnected[i] = false;
+					}
+					
+				}
+				
+				var button = document.getElementById("EnableToneGenerator");
+				button.innerHTML = "Disable";
+				
+				this.casingButtonSound.src = "images/casing-button-sound-enabled.png";
+
+			}
+			else
+			{
+				var button = document.getElementById("EnableToneGenerator");
+				button.innerHTML = "Enable";
+
+				this.casingButtonSound.src = "images/casing-button-sound-disabled.png";				
+			}
+		}
+		
+		AudioEnabledToggle()
+		{
+			preferences.audioEnabled = !preferences.audioEnabled;
+			
+			this.AudioEnabledDoApply()
+		}
+		
 		// Input output
 		
 		InputOutputStart(isInput)
@@ -2777,6 +2856,7 @@
 			this.clearMemoryLabelsPressed = false;
 			this.stepPressed = false;
 			this.runPressed = false;
+			this.runTogglePressed = false;
 			this.stopPressed = false;
 			this.keyPressed = false;
 			this.keyPressedCode = 0;
@@ -2784,7 +2864,7 @@
 			this.keyReleasedCode = 0;
 			this.keyboardKeysState = new Array();
 			this.shortcutEnabled = false;
-			this.enableToneGenerator = false;
+			this.toggleToneGenerator = false;
 			this.insertProgramLinePressed = false;
 			this.deleteProgramLinePressed = false;			
 			this.insertStringDataPressed = false;
@@ -2810,6 +2890,7 @@
 			this.dialogClosePressed = false;
 			this.helpShowPressed = false;
 			this.helpShowPressedId = helpId.none;
+			this.toggleDeveloperModePressed = false;
 			
 			this.buttonNewProject = document.getElementById("NewProject");
 			this.buttonLoadProject = document.getElementById("LoadProject");
@@ -2825,10 +2906,18 @@
 			
 			this.buttonStop.style.opacity = 0.35;
 			
+			this.casingButtonPlay = document.getElementById("CasingPlay");
+			this.casingButtonSound = document.getElementById("CasingSound");
+			this.casingButtonLoad = document.getElementById("CasingLoad");
+			this.casingButtonDeveloperMode = document.getElementById("CasingDeveloperMode");
+			
+			
 			this.step = false;
 		
 			this.state = states.stateStopped;
 			this.nextState = states.stateStopped;
+			
+			this.DeveloperModeStart();
 			
 			this.ThemeStart();
 			
@@ -3059,7 +3148,7 @@
 
 
 				
-				if(this.stopPressed)
+				if(this.stopPressed || this.runTogglePressed)
 				{
 					this.nextState = states.stateStopped;
 				}
@@ -3214,22 +3303,9 @@
 				}
 
 				
-				if(this.enableToneGenerator)
+				if(this.toggleToneGenerator)
 				{		
-					this.audioContext = new AudioContext();
-					this.oscillator = [];
-					this.oscillatorConnected = [];
-					
-					for(var i = 0; i < configuration.audioChannels; i++)
-					{
-						this.oscillator[i] = this.audioContext.createOscillator();
-						this.oscillator[i].type = 'square';
-						this.oscillator[i].start();
-						this.oscillatorConnected[i] = false;
-					}
-					
-					var button = document.getElementById("EnableToneGenerator");
-					button.style.visibility = "hidden";
+					this.AudioEnabledToggle();
 				}
 				
 				if(this.dialogOpenPressed)
@@ -3247,9 +3323,14 @@
 					this.HelpShow(this.helpShowPressedId);
 				}
 				
+				if(this.toggleDeveloperModePressed)
+				{
+					this.DeveloperModeToggle();
+				}
 				
 				
-				if(this.applyConfigurationPressed || this.resetPressed || this.clearProgramPressed || this.clearMemoryLabelsPressed || this.newProjectPressed || this.loadProjectPressed || this.saveProjectPressed)
+				
+				if(this.applyConfigurationPressed || this.resetPressed || this.clearProgramPressed || this.clearMemoryLabelsPressed || this.newProjectPressed || this.loadProjectPressed || this.saveProjectPressed || this.runTogglePressed)
 				{
 					if(this.applyConfigurationPressed)
 					{
@@ -3334,7 +3415,7 @@
 							
 						}
 
-						else // this.clearProgramPressed
+						else if(this.clearProgramPressed)
 						{
 							var result = confirm("Se perderá el programa actual ¿estás seguro/a?");
 							
@@ -3351,7 +3432,7 @@
 				}
 				
 				
-				if(this.runPressed)
+				if(this.runPressed || this.runTogglePressed)
 				{
 					var success;
 					
@@ -3529,10 +3610,11 @@
 			this.clearMemoryLabelsPressed = false;
 			this.stepPressed = false;
 			this.runPressed = false;
+			this.runTogglePressed = false;
 			this.stopPressed = false;
 			this.keyPressed = false;
 			this.keyReleased = false;
-			this.enableToneGenerator = false;
+			this.toggleToneGenerator = false;
 			this.saveMemoryPressed = false;
 			this.saveProgramPressed = false;
 			this.loadMemoryPressed = false;
@@ -3548,6 +3630,7 @@
 			this.dialogOpenPressed = false;
 			this.dialogClosePressed = false;
 			this.helpShowPressed = false;
+			this.toggleDeveloperModePressed = false;
 
 			
 			
@@ -4137,43 +4220,39 @@
 				var value = this.ProgramReadArg(instructionIndex, 0);
 				var channel = (configuration.audioChannels > 1 ? this.ProgramReadArg(instructionIndex, 1) : 0);
 
-				
-				if(this.audioContext != null)
-				{			
-					this.oscillator[channel].frequency.value = value;
-					this.lastGeneratedTone[channel] = value;
-					
-					if(!this.oscillatorConnected[channel])
-					{
-						this.oscillator[channel].connect(this.audioContext.destination);				
-						this.oscillatorConnected[channel] = true;
+				if(preferences.audioEnabled)
+				{
+					if(this.audioContext != null)
+					{			
+						this.oscillator[channel].frequency.value = value;
+						this.lastGeneratedTone[channel] = value;
+						
+						if(!this.oscillatorConnected[channel])
+						{
+							this.oscillator[channel].connect(this.audioContext.destination);				
+							this.oscillatorConnected[channel] = true;
+						}
 					}
 				}
-				else
-				{
-					alert("Tienes que habilitar el generador de sonidos para poder ejecutar la instrucción de la línea de programa " + instructionIndex);
-					instructionResult = constants.instructionResultProgramEnd;
-				}
-
 			
 			}
 			else if(opCode == opCodes.soundStop)
 			{
 				var channel = (configuration.audioChannels > 1 ? this.ProgramReadArg(instructionIndex, 0) : 0);
 				
-				if(this.audioContext != null)
-				{	
-					if(this.oscillatorConnected)
-					{
-						this.oscillator[channel].disconnect(this.audioContext.destination);
-						this.oscillatorConnected[channel] = false;	
-					}
-				}
-				else
+				if(preferences.audioEnabled)
 				{
-					window.alert("Tienes que habilitar el generador de sonidos primero para usar la instrucción " + opCode + " en la línea de programa " + pc);
-					instructionResult = constants.instructionResultProgramEnd;
-				}			
+					if(this.audioContext != null)
+					{	
+						if(this.oscillatorConnected)
+						{
+							this.oscillator[channel].disconnect(this.audioContext.destination);
+							this.oscillatorConnected[channel] = false;	
+						}
+					}
+					
+				}
+			
 			}
 			else if(opCode == opCodes.stackPush)
 			{
@@ -4426,6 +4505,13 @@
 				this.buttonShowOnRun.style.opacity = 0.35;
 				this.buttonAbout.style.opacity = 0.35;
 				this.buttonHelp.style.opacity = 0.35;
+				
+				this.casingButtonSound.style.opacity = 0.35;
+				this.casingButtonLoad.style.opacity = 0.35;
+				this.casingButtonDeveloperMode.style.opacity = 0.35;
+				
+				
+				this.casingButtonPlay.src = "images/casing-button-stop.png";
 			}
 			
 
@@ -4498,7 +4584,16 @@
 				this.buttonShowOnRun.style.opacity = 1;
 				this.buttonAbout.style.opacity = 1;
 				this.buttonHelp.style.opacity = 1;
+				
+				this.casingButtonSound.style.opacity = 1;
+				this.casingButtonLoad.style.opacity = 1;
+				this.casingButtonDeveloperMode.style.opacity = 1;
+				
+				
+				this.casingButtonPlay.src = "images/casing-button-play.png";
 			}
+			
+			
 			
 			this.RegistersShow();			
 			this.MemoryShow();
@@ -4643,6 +4738,11 @@
 		{
 			this.clearMemoryLabelsPressed = true;
 		}
+		
+		OnRunTogglePressed()
+		{
+			this.runTogglePressed = true;
+		}
 
 		OnRunPressed()
 		{
@@ -4660,9 +4760,9 @@
 			this.stepPressed = true;
 		}
 		
-		OnEnableToneGenerator()
+		OnToggleAudio()
 		{
-			this.enableToneGenerator = true;
+			this.toggleToneGenerator = true;
 			
 			this.ProcessorTick();
 		}
@@ -4743,6 +4843,14 @@
 			this.ProcessorTick();
 
 		}
+		
+		OnToggleDeveloperModePressed()
+		{
+			this.toggleDeveloperModePressed = true;
+			this.ProcessorTick();			
+		}
+		
+		
 		
 		
 	}
