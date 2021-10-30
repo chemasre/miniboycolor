@@ -30,4 +30,8 @@ Versión 2.14
 2.18
 
 - Añadidos shortcuts
+
+2.19
+
+- Añadida capacidad para cambiar entre modo desarrollador y modo jugador.
  
