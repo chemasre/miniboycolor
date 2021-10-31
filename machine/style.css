@@ -84,6 +84,11 @@ input
 	overflow:auto;
 }
 
+#screen, #input, #output
+{
+	/* mix-blend-mode:luminosity; */
+}
+
 /* Developer mode */
 
 .developer
@@ -92,7 +97,7 @@ input
 	background-image: url("images/background2.png");
 	background-size: 25%;
 	background-repeat: repeat;
-
+	
 }
 
 .developer .component
@@ -102,6 +107,12 @@ input
 	padding:3pt;
 	background-image: url('images/background-component.png');
 	background-repeat: repeat;
+
+	opacity: 1;
+	transition:opacity 1s;
+	transition-timing-function:ease-out;
+
+
 	
 }
 
@@ -109,11 +120,19 @@ input
 .developer #screenGrid
 {
 	visibility:visible;
+	opacity: 1;
+	transition:opacity 1s;
+	transition-timing-function:ease-out;	
 }
 
 .developer .topMenu
 {
 	visibility:visible;
+	position:relative;
+	top:0;
+	transition:top 1s;
+	transition-timing-function:ease-out;
+	
 }
 
 
@@ -127,6 +146,7 @@ input
 	background-size: 70%;
 	background-repeat: repeat;
 	overflow:hidden;
+	
 }
 
 .player .machineCasing
@@ -135,11 +155,21 @@ input
     top:50%;
     left:33%;
 	transform: translate(-50%, -50%);
+	
 }
 
 .player .component
 {
 	visibility:hidden;
+	opacity: 0;
+	transition:opacity 1s;
+
+	
+}
+
+.player #comentario
+{
+	opacity: 1;
 }
 
 .player #comentario textarea
@@ -161,17 +191,24 @@ input
 	color: rgba(255,255,255,0.7);
 	text-shadow: -1pt 1pt 4pt black;
 	resize: none;
+
+	
+
 }
 
 
 .player #screenGrid
 {
 	visibility:hidden;
+	opacity: 0;
 }
 
 .player .topMenu
 {
 	visibility:hidden;
+	position:relative;
+	top:-3cm;
+	transition:top 1s;
 }
 
 
@@ -190,12 +227,12 @@ input
 }
 
 
+
 #themeChooser
 {
 	font-size:5pt;
 	margin-right:3pt;
 	margin-bottom:10pt;
-	
 }
 
 #themeChooser input
@@ -460,6 +497,12 @@ input
 				inset 0 0.2em 0.2em rgba(240,240,240,0.8);
 
 }
+
+.machineMenu
+{
+	mix-blend-mode:hard-light;
+}
+
 
 .machineMenu table
 {
