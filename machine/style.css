@@ -173,6 +173,11 @@ input
 	visibility:visible;
 }
 
+.developer #twitterTimeline
+{
+	display:none;
+}
+
 
 
 .developer #screenGrid
@@ -202,7 +207,7 @@ input
 	background-attachment:fixed;
 	background-size: 30%;
 	background-repeat: repeat;
-	overflow:hidden;
+	overflow:auto;
 	
 }
 
@@ -210,7 +215,7 @@ input
 {
 	position:fixed;
     top:50%;
-    left:33%;
+    left:50%;
 	transform: translate(-50%, -50%);
 
 /*
@@ -234,7 +239,7 @@ input
 	opacity: 1;		
 }
 
-.player #comentario textarea
+.player #comentario textarea, .player #BarraLateral
 {
 	background-color: rgba(0,0,0,0.9);
 	padding:20pt;
@@ -306,7 +311,7 @@ input
 	visibility:visible;
 	position:fixed;
     top:50%;
-    left:66%;
+    left:80%;
 	width:20%;
 	height:60%;
 	transform: translate(-50%, -50%);
