@@ -21,10 +21,13 @@ Autor: Team MiniBoy
 
 Descripción:
 
-Juego de la vida de Conway para MiniBoy Color.
+Una versión del juego de la vida de Conway.
 
+En el juego, cada celda puede estar viva o muerta.
 
+Si una celda está viva y tiene dos o tres vecinas vivas, sobrevive en la siguiente generación. En todos los demás casos muere.
 
+Si una celda está muerta y tiene exactamente tres vecinas vivas, vivirá en la siguiente generación.
 
 
 
