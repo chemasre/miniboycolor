@@ -1,4 +1,6 @@
 	// Visual properties
+	
+	
 
 	var preferences =
 	{
@@ -15,10 +17,14 @@
 		inputOutputWidth: 1024,
 		inputOutputHeight: 64,
 		themeColors: [ "rgb(255,127,204)", "rgb(80,200,80)", "rgb(127,127,255)", "rgb(200,200,80)" ],
+		themeIndex: 0,
 		showOnRun: false,
 		language: 1,
 		developerMode: false,
-		audioEnabled: false
+		audioEnabled: false,
+		startupProject: "MiniLogo.mbp",
+		defaultProjectName: "MyProject.mbp",
+		projectLoadBaseUrl: "https://chemasre.github.io/miniboycolor/projects/"
 		
 	}
 
@@ -763,17 +769,35 @@
 			return this.resourcesLoaded == 11;
 		}
 		
+		// Preferences
+		
+		PreferencesStart()
+		{
+			var enabled = MachineUtils.GetCookie("DeveloperMode");
+			if(enabled != null) { preferences.developerMode = (enabled != 0); }
+			
+			var index = MachineUtils.GetCookie("ThemeIndex");
+			if(index != null) { preferences.themeIndex = index; }
+				
+			var name = MachineUtils.GetCookie("DefaultProjectName");
+			if(name != null) { preferences.defaultProjectName = name; }
+			
+			this.PreferencesSave();
+
+			
+		}
+		
+		PreferencesSave()
+		{
+			MachineUtils.SetCookie("DeveloperMode", preferences.developerMode ? 1 : 0);			
+			MachineUtils.SetCookie("ThemeIndex", preferences.themeIndex);
+			MachineUtils.SetCookie("DefaultProjectName", preferences.defaultProjectName);
+		}
+		
 		// Developer mode start
 		
 		DeveloperModeStart()
 		{
-			var enabled = MachineUtils.GetCookie("DeveloperMode");
-			
-			if(enabled != null)
-			{
-				preferences.developerMode = (enabled != 0);
-			}
-			
 			this.DeveloperModeDoApply();
 
 		}
@@ -789,7 +813,8 @@
 				document.body.className = "player";
 			}
 			
-			MachineUtils.SetCookie("DeveloperMode", preferences.developerMode ? 1 : 0);
+			this.PreferencesSave();
+			
 		}
 		
 		DeveloperModeToggle()
@@ -804,23 +829,11 @@
 		
 		ThemeStart()
 		{
-			this.themeScreen = document.getElementById("Pantalla");
+			this.themeScreen = document.getElementById("Pantalla");			
 			
-			var index = MachineUtils.GetCookie("ThemeIndex");
-			
-			if(index == null)
-			{
-				this.ThemeDoApply(0);
-				this.themeIndex = 0;
-			}
-			else
-			{
-				this.ThemeDoApply(index);
-				this.themeIndex = index;
-			}
-			
-			MachineUtils.SetCookie("ThemeIndex", this.themeIndex);
-			
+			this.ThemeDoApply(preferences.themeIndex);
+			this.themeIndex = preferences.themeIndex;
+
 			
 		}
 		
@@ -829,7 +842,8 @@
 			this.themeScreen.style.backgroundColor = preferences.themeColors[index];
 			this.themeIndex = index;
 			
-			MachineUtils.SetCookie("ThemeIndex", this.themeIndex);
+			preferences.themeIndex = index;			
+			this.PreferencesSave();
 		}
 		
 		// Dialogs
@@ -2903,6 +2917,7 @@
 			this.run = false;
 			this.stop = false;
 			this.reset = false;
+			this.loadStartupProject = false;
 			
 			this.buttonNewProject = document.getElementById("NewProject");
 			this.buttonLoadProject = document.getElementById("LoadProject");
@@ -2927,6 +2942,8 @@
 		
 			this.state = states.stateStopped;
 			this.nextState = states.stateStopped;
+			
+			this.PreferencesStart();
 			
 			this.DeveloperModeStart();
 			
@@ -2964,6 +2981,8 @@
 			this.KeyboardStart();
 			
 			this.AudioStart();
+			
+			this.ProjectStart();
 		
 			
 			// Reset everything
@@ -2975,6 +2994,31 @@
 
 			this.ConfigurationShow();
 			
+			if(!this.isStarted)
+			{
+				if(preferences.startupProject != "")
+				{
+					this.loadStartupProject = true;
+				}
+				else
+				{
+					this.loadStartupProject = false;
+				}
+				
+				if(preferences.developerMode)
+				{
+					this.projectChooser.style.display = "none";
+					this.projectChooserVisible = false;
+				}
+				else
+				{
+					this.projectChooser.style.display = "block";
+					this.projectChooserVisible = true;
+				}				
+				
+			}
+			
+
 			this.isStarted = true;
 			
 		}
@@ -3342,7 +3386,7 @@
 				if(	this.applyConfigurationPressed || this.resetPressed ||
 					this.clearProgramPressed || this.clearMemoryLabelsPressed ||
 					this.newProjectPressed || this.loadProjectPressed ||
-					this.saveProjectPressed || this.runTogglePressed || this.reset)
+					this.saveProjectPressed || this.runTogglePressed || this.reset || this.loadStartupProject)
 				{
 					if(this.applyConfigurationPressed)
 					{
@@ -3398,7 +3442,11 @@
 					}
 					else if(this.loadProjectPressed)
 					{
-						this.ProjectLoad(false);
+						this.ProjectLoadFromLocalFile(false);
+					}
+					else if(this.loadStartupProject)
+					{
+						this.ProjectLoadFromUrl(preferences.startupProject, true);
 					}
 					else if(this.saveProjectPressed)
 					{
@@ -3654,7 +3702,7 @@
 			this.run = false;
 			this.stop = false;
 			this.reset = false;
-
+			this.loadStartupProject = false;
 			
 			
 
@@ -4637,6 +4685,24 @@
 			
 		}
 		
+		ProjectStart()
+		{
+			this.projectChooser = document.getElementById("ListaJuegos");
+
+		}
+		
+		ProjectChooserShow()
+		{
+			this.projectChooser.style.display = "block";
+			this.projectChooserVisible = true;
+		}
+		
+		ProjectChooserClose()
+		{
+			this.projectChooser.style.display = "none";
+			this.projectChooserVisible = false;
+		}
+		
 		ProjectNew()
 		{
 			this.PrepareRestart();
@@ -4659,7 +4725,7 @@
 			
 			var text = configurationText + separator + commentText + separator + registersText + separator + memoryText + separator + programText;
 			
-			var name = prompt("Escribe un nombre para el proyecto", "NuevoProyecto");
+			var name = prompt("Escribe un nombre para el proyecto", preferences.defaultProjectName);
 			
 			if(name != null)
 			{
@@ -4668,11 +4734,15 @@
 				{
 					var link = document.createElement('a');
 					link.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
-					link.setAttribute('download', name + ".mbp");
+					link.setAttribute('download', name);
 					link.style.display = 'none';
 					document.body.appendChild(link);		
 					link.click();
 					document.body.removeChild(link);
+					
+					preferences.defaultProjectName = name;
+					
+					this.PreferencesSave();
 				}
 				else
 				{
@@ -4682,7 +4752,42 @@
 			
 		}
 		
-		ProjectLoad(runAfterLoad)
+		ProjectLoadFromText(contents, runAfterLoad)
+		{
+			var sections = contents.split(constants.projectSaveSectionSeparator);
+			
+			machine.PrepareRestart();
+			
+			machine.ConfigurationLoad(sections[0]);
+			machine.Start();
+			
+			machine.CommentLoad(sections[1]);
+			machine.RegistersLoad(sections[2]);
+			machine.MemoryLoad(sections[3]);
+			machine.ProgramLoad(sections[4]);
+			
+			machine.DynamicMemoryReset();
+			machine.MemoryReset();
+			machine.ProcessorReset();
+			
+			if(runAfterLoad)
+			{
+				machine.Run();
+			}
+		}
+		
+		ProjectLoadFromUrl(projectName, runAfterLoad)
+		{
+		
+			var loadFromText = function (contents) { machine.ProjectLoadFromText(contents, runAfterLoad); }	
+			
+			var toText = function(response) { return response.text(); }
+			
+			fetch(preferences.projectLoadBaseUrl + projectName).then(toText).then(loadFromText);
+			
+		}
+		
+		ProjectLoadFromLocalFile(runAfterLoad)
 		{
 			var DoLoad1 = function (file)
 			{		
@@ -4698,26 +4803,28 @@
 			
 			var DoLoad2 = function (contents)
 			{
-				var sections = contents.split(constants.projectSaveSectionSeparator);
+				machine.ProjectLoadFromText(contents, runAfterLoad);
 				
-				machine.PrepareRestart();
+				// var sections = contents.split(constants.projectSaveSectionSeparator);
 				
-				machine.ConfigurationLoad(sections[0]);
-				machine.Start();
+				// machine.PrepareRestart();
 				
-				machine.CommentLoad(sections[1]);
-				machine.RegistersLoad(sections[2]);
-				machine.MemoryLoad(sections[3]);
-				machine.ProgramLoad(sections[4]);
+				// machine.ConfigurationLoad(sections[0]);
+				// machine.Start();
 				
-				machine.DynamicMemoryReset();
-				machine.MemoryReset();
-				machine.ProcessorReset();
+				// machine.CommentLoad(sections[1]);
+				// machine.RegistersLoad(sections[2]);
+				// machine.MemoryLoad(sections[3]);
+				// machine.ProgramLoad(sections[4]);
 				
-				if(runAfterLoad)
-				{
-					machine.Run();
-				}
+				// machine.DynamicMemoryReset();
+				// machine.MemoryReset();
+				// machine.ProcessorReset();
+				
+				// if(runAfterLoad)
+				// {
+					// machine.Run();
+				// }
 				
 
 			}			
@@ -4893,8 +5000,15 @@
 		
 		OnCasingLoadPressed()
 		{
-			this.Stop();
-			this.ProjectLoad(true);
+			if(preferences.developerMode)
+			{
+				this.Stop();
+				this.ProjectLoadFromLocalFile(true);
+			}
+			else
+			{
+				this.ProjectChooserShow();
+			}
 		}
 		
 		OnCasingToggleAudioPressed()
@@ -4909,7 +5023,16 @@
 			this.DeveloperModeToggle();
 		}
 		
+		OnProjectChoose(name)
+		{
+			this.ProjectLoadFromUrl(name, true);
+			this.ProjectChooserClose();
+		}
 		
+		OnProjectChoosePickLocal()
+		{
+			this.ProjectLoadFromLocalFile(true);
+		}
 		
 		
 	}

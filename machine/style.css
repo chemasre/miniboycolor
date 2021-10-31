@@ -1,3 +1,16 @@
+@keyframes appear
+{
+  0%
+  {
+    opacity: 0;
+  }
+  100%
+  {
+    opacity: 1;
+  }
+}
+
+
 /* Common */
 
 @font-face {
@@ -78,6 +91,46 @@ input
 	padding:0pt;
 }
 
+.machineCasing
+{
+	box-shadow: 5pt 5pt 5pt 0pt rgba(0,0,0,0.5),
+				inset 0 -0.2em 0.2em rgba(0,0,0,0.5),
+				inset 0 0.2em 0.2em rgba(240,240,240,0.8);
+
+	background-color: rgb(130,127,204);
+	
+	
+}
+
+.machineMenu
+{
+	mix-blend-mode:hard-light;
+}
+
+
+.machineMenu table
+{
+	padding-left: 16pt;
+	padding-right: 8pt;
+	padding-top: 0pt;
+	padding-bottom: 0pt,
+}
+
+.machineMenu .button
+{
+	width:20pt;
+	padding:2pt;
+	
+	background-color: rgba(40,40,40,0.1);
+	color: rgb(120,120,120);
+	box-shadow: 0pt 0pt 0pt 0pt rgba(0,0,0,0.3),
+				inset 0 -0.2em 0.2em rgba(0,0,0,0.3),
+				inset 0 0.2em 0.2em rgba(240,240,240,0.3);
+	border-style:none;
+	border-radius:3pt;
+	
+}
+
 #mainBox
 {
 	padding:20pt;
@@ -100,6 +153,7 @@ input
 	
 }
 
+
 .developer .component
 {
 	visibility:visible;
@@ -108,21 +162,24 @@ input
 	background-image: url('images/background-component.png');
 	background-repeat: repeat;
 
-	opacity: 1;
-	transition:opacity 1s;
-	transition-timing-function:ease-out;
-
+	animation: 0.5s ease-out 0s 1 appear;	
 
 	
 }
+
+.developer #ListaJuegos
+{
+	display:none;
+	visibility:visible;
+}
+
 
 
 .developer #screenGrid
 {
 	visibility:visible;
-	opacity: 1;
-	transition:opacity 1s;
-	transition-timing-function:ease-out;	
+
+	animation: 0.5s ease-out 0s 1 appear;	
 }
 
 .developer .topMenu
@@ -130,11 +187,11 @@ input
 	visibility:visible;
 	position:relative;
 	top:0;
-	transition:top 1s;
+	transition:top 0.5s;
 	transition-timing-function:ease-out;
 	
+	
 }
-
 
 /* Player mode */
 
@@ -143,7 +200,7 @@ input
 	background-color: rgb(51, 51, 51);
 	background-image: url("images/background1.png");
 	background-attachment:fixed;
-	background-size: 70%;
+	background-size: 30%;
 	background-repeat: repeat;
 	overflow:hidden;
 	
@@ -155,7 +212,12 @@ input
     top:50%;
     left:33%;
 	transform: translate(-50%, -50%);
-	
+
+/*
+	animation-duration: 3s;
+	animation-name: machineCasing;
+	animation-iteration-count: infinite;	
+*/
 }
 
 .player .component
@@ -169,7 +231,74 @@ input
 
 .player #comentario
 {
-	opacity: 1;
+	opacity: 1;		
+}
+
+.player #comentario textarea
+{
+	background-color: rgba(0,0,0,0.9);
+	padding:20pt;
+	border:solid;
+	border-width:1pt;
+	border-color:rgba(0,200,255,0.7);
+	border-radius:15pt;
+	color: rgba(255,255,255,0.7);
+	text-shadow: -1pt 1pt 4pt black;
+	
+}
+
+.player #ListaJuegos
+{
+	display:block;
+	position:fixed;
+	left:0;
+	right:0;
+	top:0;
+	bottom:0;
+	background-color:rgba(0,0,0,0.9);
+	z-index:1;
+	
+	
+}
+
+.player #ListaJuegos .gameList
+{
+	position:fixed;
+	left:0;
+	right:0;
+	top:50%;
+	transform:translate(0, -50%);
+	overflow:auto;
+	background-image: url("images/choose-project-gradient.png");
+	background-size:contain;
+	background-color:transparent;
+	z-index:2;	
+}
+
+
+.player .gameBox
+{
+	display:inline-block;
+	box-shadow: 5pt 5pt 5pt 0pt rgba(0,0,0,0.5),
+				inset 0 -0.2em 0.2em rgba(0,0,0,0.5),
+				inset 0 0.2em 0.2em rgba(240,240,240,0.8);
+	
+	background-color:rgb(0,0,0);
+	padding:20pt;
+
+	transform:scale(1);
+	transition:transform 0.5s;
+}
+
+.player .gameBox:hover
+{
+	transform:scale(1.1);
+	transition:transform 0.5s;
+}
+
+.player .gameBox img
+{
+	height:8cm;	
 }
 
 .player #comentario textarea
@@ -181,18 +310,7 @@ input
 	width:20%;
 	height:60%;
 	transform: translate(-50%, -50%);
-	color:rgb(40,40,40);
-	background-color: rgba(0,0,0,0.9);
-	padding:20pt;
-	border:solid;
-	border-width:1pt;
-	border-color:rgba(0,200,255,0.7);
-	border-radius:15pt;
-	color: rgba(255,255,255,0.7);
-	text-shadow: -1pt 1pt 4pt black;
 	resize: none;
-
-	
 
 }
 
@@ -435,10 +553,12 @@ input
 	background-color: rgb(40,40,40,0.8);
 }
 
+/*
 .backgroundMachine
 {
 	background-color: rgb(130,127,204);
 }
+*/
 
 
 .thinRounded
@@ -490,42 +610,6 @@ input
 	border-radius:10pt;
 }
 
-.machineCasing
-{
-	box-shadow: 5pt 5pt 5pt 0pt rgba(0,0,0,0.5),
-				inset 0 -0.2em 0.2em rgba(0,0,0,0.5),
-				inset 0 0.2em 0.2em rgba(240,240,240,0.8);
-
-}
-
-.machineMenu
-{
-	mix-blend-mode:hard-light;
-}
-
-
-.machineMenu table
-{
-	padding-left: 16pt;
-	padding-right: 8pt;
-	padding-top: 0pt;
-	padding-bottom: 0pt,
-}
-
-.machineMenu .button
-{
-	width:20pt;
-	padding:2pt;
-	
-	background-color: rgba(40,40,40,0.1);
-	color: rgb(120,120,120);
-	box-shadow: 0pt 0pt 0pt 0pt rgba(0,0,0,0.3),
-				inset 0 -0.2em 0.2em rgba(0,0,0,0.3),
-				inset 0 0.2em 0.2em rgba(240,240,240,0.3);
-	border-style:none;
-	border-radius:3pt;
-	
-}
 
 
 

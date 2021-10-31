@@ -1,5 +1,5 @@
 configuration
-version:2.17
+version:2.19
 processorFrequency:1000000
 staticMemorySize:128
 dynamicMemorySize:1400
@@ -17,7 +17,7 @@ screenFrequency:30
 comment
 Título: MiniLife
 
-Autor: José Manuel (Chema) Solís
+Autor: Team MiniBoy
 
 Descripción:
 
@@ -30,12 +30,12 @@ Juego de la vida de Conway para MiniBoy Color.
 
 ---
 registers
-A:18
-B:16
-C:181
-PC:48
-SP:253
-BP:253
+A:31
+B:31
+C:125
+PC:143
+SP:256
+BP:256
 R:0
 ---
 memory
