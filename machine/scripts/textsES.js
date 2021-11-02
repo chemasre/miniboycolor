@@ -990,9 +990,6 @@ mediante un índice de parámetro
 `Macro que guarda en arg1 el valor de la celda de memoria
 correspondiente al indice de parámetro arg2.
 `,
-`Macro que guarda en la celda de memoria correspondiente al indice
-de parámetro arg1 el valor arg2.
-`,
 `Macro que intenta reservar la cantidad de 
 memoria dinámica indicada por arg2, almacenando en arg1 la 
 dirección de memoria en que empieza la memoria reservada en
