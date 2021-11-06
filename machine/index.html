@@ -81,72 +81,95 @@
 <tr>
 	<td><img src="images/processor.png"></td>
 	<td><table>
-	<tr class="backgroundFieldBase"><td>A</td><td><input class="notEditable" type="text" id="RA" readonly></td></tr>
-	<tr class="backgroundFieldBase"><td>B</td><td><input class="notEditable" type="text" id="RB" readonly></td></tr>
-	<tr class="backgroundFieldBase"><td>C</td><td><input class="notEditable" type="text" id="RC" readonly></td></tr>
-	<tr class="backgroundFieldBase"><td>PC</td><td><input class="notEditable" type="text" id="PC" readonly></td></tr>
-	<tr class="backgroundFieldBase"><td>SP</td><td><input class="notEditable" type="text" id="SP" readonly></td></tr>
-	<tr class="backgroundFieldBase"><td>BP</td><td><input class="notEditable" type="text" id="BP" readonly></td></tr>
-	<tr class="backgroundFieldBase"><td>R</td><td><input class="notEditable" type="text" id="RR" readonly></td></tr>
+	<tr class="backgroundFieldBase"><td>A</td><td><input class="notEditable registerValue" type="text" id="RA" readonly></td></tr>
+	<tr class="backgroundFieldBase"><td>B</td><td><input class="notEditable registerValue" type="text" id="RB" readonly></td></tr>
+	<tr class="backgroundFieldBase"><td>C</td><td><input class="notEditable registerValue" type="text" id="RC" readonly></td></tr>
+	<tr class="backgroundFieldBase"><td>PC</td><td><input class="notEditable registerValue" type="text" id="PC" readonly></td></tr>
+	<tr class="backgroundFieldBase"><td>SP</td><td><input class="notEditable registerValue" type="text" id="SP" readonly></td></tr>
+	<tr class="backgroundFieldBase"><td>BP</td><td><input class="notEditable registerValue" type="text" id="BP" readonly></td></tr>
+	<tr class="backgroundFieldBase"><td>R</td><td><input class="notEditable registerValue" type="text" id="RR" readonly></td></tr>
 </table>
 </td>
 </tr>
 </table>
-<div class="menu"></div>
 </div>
-<table>
-<tr>
-<td>
 <div id="ToneGenerator" class="component margined thinRounded shadowed">
 <table>
 <tr><td><img src="images\speaker.png"></td><td><input id="TonoGenerado"></td></tr>
 </table>
 <div class="menu"><button class="notbordered" id="EnableToneGenerator" onclick="machine.OnToggleAudio()">Enable</button></div>
 </div>
-</td>
-<td>
 <div id="Keyboard" class="component margined thinRounded">
 <table>
 <tr><td><img src="images\keyboard.png"></td><td><input id="TeclaPulsada"></td></tr>
 </table>
 </div>
-</td>
-</tr>
-<tr>
-<td>
 <div id="RandomNumberGenerator" class="component margined thinRounded shadowed">
 <table>
 <tr><td><img src="images\dice.png"></td><td><input id="ValorAleatorioGenerado"></td></tr>
 </table>
 </div>
-</td>
-<td>
 <div id="Clock" class="component margined thinRounded shadowed">
 <table>
 <tr><td><img src="images\clock.png"></td><td><input id="TiempoActual"></td></tr>
 </table>
 </div>
-</td>
-</tr>
-</table>
-<div id="Comentario" class="component padded margined thinRounded shadowed">
-<textarea id="comment" class="fullwidth padded" rows="10" cols="30">
+<div id="Comment" class="component padded margined thinRounded shadowed">
+<textarea id="commentText" class="fullwidth padded" rows="10" cols="30">
 </textarea>
 </div>
 </div>
 
 <div id="Memory" class="component column margined thinRounded shadowed">
-<img src="images\memory.png">
-<div class="menu"><button id="ClearMemoryLabels" class="notbordered" onclick="machine.OnClearMemoryLabelsPressed()">Clear</button></div>
+<table>
+	<tr>
+		<td>
+			<img src="images\memory.png">
+		</td>
+		<td>
+			<div class="menu">
+			<table>
+			<tr>
+				<td class="menuGroup">Labels</td>
+			</tr>
+			<tr>
+				<td><button id="ClearMemoryLabels" class="notbordered" onclick="machine.OnClearMemoryLabelsPressed()">Clear</button></td>
+			</tr>
+			</table>
+			</div>
+		</td>
+	</tr>
+</table>
 <table id="MemoryTable" class="padded">
-<tr class="backgroundFieldBase"><td><input type="text" id="ML00000" class="inputlabel notrightaligned backgroundField">:</td><td>0</td><td><input type="text" id="M00000"></td></tr>
+<tr class="backgroundFieldBase"><td><input type="text" id="ML00000" class="memoryLabel notrightaligned backgroundField">:</td><td>0</td><td><input type="text" id="M00000" class="memoryValue"></td></tr>
 </table>
 </div>
 <div id="Program" class="component column margined thinRounded margined shadowed">
-<img src="images\program.png">
-<div class="menu"><button id="ClearProgram" class="notbordered" onclick="machine.OnClearProgramPressed()">Clear</button><button class="notbordered" id="Insert" onclick="machine.OnInsertProgramLinePressed()">Insert</button><button class="notbordered" id="Insert" onclick="machine.OnDeleteProgramLinePressed()">Delete</button><button class="notbordered" id="InsertStringData" onclick="machine.OnInsertStringDataPressed()">String</button><button class="notbordered" id="InsertImageData" onclick="machine.OnInsertImageDataPressed()">Image</button></div>
+<table>
+	<tr>
+		<td><img src="images\program.png"></td>
+		<td>
+			<div class="menu">
+			<table>
+			<tr>
+				<td class="menuGroup">Labels</td>
+				<td class="menuGroup" colspan="2">Lines</td>
+				<td class="menuGroup" colspan="2">Data insert</td>
+			</tr>
+			<tr>
+				<td><button id="ClearProgram" class="notbordered" onclick="machine.OnClearProgramPressed()">Clear</button></td>
+				<td><button class="notbordered" id="Insert" onclick="machine.OnInsertProgramLinePressed()">Insert</button></td>
+				<td><button class="notbordered" id="Insert" onclick="machine.OnDeleteProgramLinePressed()">Delete</button></td>
+				<td><button class="notbordered" id="InsertStringData" onclick="machine.OnInsertStringDataPressed()">String</button></td>
+				<td><button class="notbordered" id="InsertImageData" onclick="machine.OnInsertImageDataPressed()">Image</button></td>
+			</tr>
+			</table>
+			</div>
+		</td>
+	</tr>
+</table>
 <table id="ProgramTable" class="padded">
-<tr class="backgroundFieldBase"><td><input type="text" id="PL00000" class="inputlabel notrightaligned backgroundField">:</td><td>0</td><td><input type="text" class="instructionInput" id="P00000"></td></tr>
+<tr class="backgroundFieldBase"><td><input type="text" id="PL00000" class="instructionLabel notrightaligned backgroundField">:</td><td>0</td><td><input type="text" class="instructionValue" id="P00000"></td></tr>
 </table>
 </div>
 </div>

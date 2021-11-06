@@ -234,12 +234,12 @@ input
 	
 }
 
-.player #comentario
+.player #Comment
 {
 	opacity: 1;		
 }
 
-.player #comentario textarea, .player #BarraLateral
+.player #Comment textarea, .player #BarraLateral
 {
 	background-color: rgba(0,0,0,0.9);
 	padding:20pt;
@@ -306,7 +306,7 @@ input
 	height:8cm;	
 }
 
-.player #comentario textarea
+.player #Comment textarea
 {
 	visibility:visible;
 	position:fixed;
@@ -442,12 +442,34 @@ input
 	background-color: rgba(0.2,0.2,0.2,1.0);
 }
 
+#Processor, #ToneGenerator, #Keyboard, #RandomNumberGenerator, #Clock, #Comment
+{
+	width: 6cm;
+}
+
+#Processor .registerValue
+{
+	width: 1.5cm;
+}
+
 
 
 #Memory
 {
-	width: 8.5cm;
+	width: 6.5cm;
 }
+
+#Memory .memoryValue
+{
+	width: 1.5cm;
+}
+
+#Memory .memoryLabel
+{
+	width: 3cm;
+}
+
+
 
 .component table
 {
@@ -470,6 +492,8 @@ input
 	height:3.2cm;
 	position:static;
 }
+
+
 
 #Memory img, #Program img
 {
@@ -496,10 +520,15 @@ input
 	margin-left:3pt;
 }
 
-#ToneGenerator, #Keyboard, #RandomNumberGenerator, #Clock
+.component .menu .menuGroup
 {
-	width:4.5cm;
+	padding-left:6pt;
+	text-align:left;
+	background-color:rgba(0,100,0,0.4);
+	color: rgb(140, 140, 140);	
+	font-size:10pt;	
 }
+
 
 
 #ToneGenerator input
@@ -531,15 +560,20 @@ input
 	width: 2cm;
 }
 
-#Program .instructionInput
+#Program .instructionValue
 {
-	width: 8cm;
+	width: 13cm;
+}
+
+#Program .instructionLabel
+{
+	width: 3cm;
 }
 
 
 #Program
 {
-	width: 12cm;
+	width: 18cm;
 }
 
 .notEditable

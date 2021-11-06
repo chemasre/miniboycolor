@@ -1298,7 +1298,7 @@
 		
 		CommentStart()
 		{
-			this.commentArea = document.getElementById("comment");
+			this.commentArea = document.getElementById("commentText");
 			
 			this.commentArea.value = texts[preferences.language].commentDefault;
 			
@@ -1321,11 +1321,11 @@
 		{
 			var lines = text.split("\n");
 			
-			var comment = "";
+			var commentText = "";
 			
-			for(var i = 1; i < lines.length; i ++) { comment += lines[i] + (i == lines.length - 1 ? "" : "\n"); }
+			for(var i = 1; i < lines.length; i ++) { commentText += lines[i] + (i == lines.length - 1 ? "" : "\n"); }
 			
-			this.commentArea.value = comment;
+			this.commentArea.value = commentText;
 		}
 
 		// Data
