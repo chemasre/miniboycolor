@@ -2,3 +2,14 @@
 {
 	background-color: rgb(127,127,255);
 }
+
+.casingTheme2 #screen
+{
+	image-rendering:crisp-edges;
+}
+
+.casingTheme2 .overlay
+{
+	display:none;
+}
+

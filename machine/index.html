@@ -4,6 +4,10 @@
 <link rel="icon" type="image/png" sizes="16x16" href="images/favicon.png">
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <link href="style.css" rel="stylesheet">
+<link href="themes/casingTheme0.css" rel="stylesheet">
+<link href="themes/casingTheme1.css" rel="stylesheet">
+<link href="themes/casingTheme2.css" rel="stylesheet">
+<link href="themes/casingTheme3.css" rel="stylesheet">
 <meta charset="UTF-8">
 <script src="scripts/textsES.js"></script>
 <script src="scripts/textsEN.js"></script>
@@ -41,14 +45,20 @@
 		<div class="smoothborder padded margined gamebox"><img src="images/choose-project-folder.png" onclick="machine.OnProjectChoosePickLocal();"></div>
 	</div>
 </div>
-<div id="Pantalla" class="smoothborder padded margined machineCasing" >
+<div id="Pantalla" class="smoothborder padded margined" >
 <div id="screenBox" class="fullwidth">
 	<canvas id="screen" class="noMargin noPadding"></canvas>
 	<canvas id="screenGrid" class="noMargin noPadding"></canvas>
+	<div id="screenOverlay" class="overlay noMargin noPadding"></div>
 </div>
-<div id="OutputBox" class="centered"><canvas id="output"></canvas></div>
-<div id="InputBox" class="centered"><canvas id="input"></canvas></div>
-
+<div id="OutputBox" class="centered">
+		<canvas id="output" class="noMargin noPadding"></canvas>
+		<div id="outputOverlay" class="overlay noMargin noPadding"></div>
+</div>
+<div id="InputBox" class="centered">
+		<canvas id="input" class="noMargin noPadding"></canvas>
+		<div id="inputOverlay" class="overlay noMargin noPadding"></div>
+</div>
 <div class ="machineMenu">
 <table class="fullwidth">
 <tr>
@@ -61,11 +71,11 @@
 <td>
 	<div class="rightaligned"><img id="logo" src="images/logo.png"></div>
 	<div class="rightAligned">
-	<div id="themeChooser">
-	<input type="radio" id="color1" name="color" value="1" onclick="machine.OnChangeTheme(0)">
-	<input type="radio" id="color2" name="color" value="2" onclick="machine.OnChangeTheme(1)">
-	<input type="radio" id="color3" name="color" value="3" onclick="machine.OnChangeTheme(2)">
-	<input type="radio" id="color4" name="color" value="4" onclick="machine.OnChangeTheme(3)">
+	<div id="casingThemeChooser">
+	<input type="radio" id="color1" name="color" value="1" onclick="machine.OnChangeCasingTheme(0)">
+	<input type="radio" id="color2" name="color" value="2" onclick="machine.OnChangeCasingTheme(1)">
+	<input type="radio" id="color3" name="color" value="3" onclick="machine.OnChangeCasingTheme(2)">
+	<input type="radio" id="color4" name="color" value="4" onclick="machine.OnChangeCasingTheme(3)">
 	</div>
 	</div>
 </td>
@@ -140,9 +150,11 @@
 		</td>
 	</tr>
 </table>
-<table id="MemoryTable" class="padded">
+<div id="MemoryTable">
+<table class="padded">
 <tr class="backgroundFieldBase"><td><input type="text" id="ML00000" class="memoryLabel notrightaligned backgroundField">:</td><td>0</td><td><input type="text" id="M00000" class="memoryValue"></td></tr>
 </table>
+</div>
 </div>
 <div id="Program" class="component column margined thinRounded margined shadowed">
 <table>
@@ -152,9 +164,9 @@
 			<div class="menu">
 			<table>
 			<tr>
-				<td class="menuGroup">Code</td>
-				<td class="menuGroup" colspan="2">Lines</td>
-				<td class="menuGroup" colspan="2">Data insert</td>
+				<td class="menuGroup">Program</td>
+				<td class="menuGroup" colspan="2">Line</td>
+				<td class="menuGroup" colspan="2">DataInsert</td>
 			</tr>
 			<tr>
 				<td><button id="ClearProgram" class="notbordered" onclick="machine.OnClearProgramPressed()">Clear</button></td>
@@ -168,9 +180,11 @@
 		</td>
 	</tr>
 </table>
-<table id="ProgramTable" class="padded">
+<div id="ProgramTable">
+<table class="padded">
 <tr class="backgroundFieldBase"><td><input type="text" id="PL00000" class="instructionLabel notrightaligned backgroundField">:</td><td>0</td><td><input type="text" class="instructionValue" id="P00000"></td></tr>
 </table>
+</div>
 </div>
 </div>
 <div id="dialogBase" onclick="machine.OnDialogClosePressed()">

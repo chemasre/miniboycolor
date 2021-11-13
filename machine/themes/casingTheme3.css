@@ -5,14 +5,11 @@
 
 .casingTheme3 #screen
 {
-	image-rendering:smooth;
-	filter:blur(3pt);
+	image-rendering:crisp-edges;
 		
 }
 
-.casingTheme3 #screenOverlay
+.casingTheme3 .overlay
 {
-	background-image: url("images/casing-overlay-dots.png");
-	background-size: cover;
-	filter:blur(1pt);
+	display:none;
 }

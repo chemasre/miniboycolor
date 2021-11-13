@@ -5,14 +5,13 @@
 	
 }
 
-.casingTheme0 .overlay
-{
-	background-image: url("images/casing-overlay-dots.png");
-	background-size: cover;
-}
-
 .casingTheme0 #screen
 {
 	image-rendering:crisp-edges;
+}
+
+.casingTheme3 .overlay
+{
+	display:none;
 }
 

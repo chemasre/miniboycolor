@@ -91,19 +91,12 @@ input
 	padding:0pt;
 }
 
-.machineCasing
+#Pantalla
 {
 	box-shadow: 5pt 5pt 5pt 0pt rgba(0,0,0,0.5),
 				inset 0 -0.2em 0.2em rgba(0,0,0,0.5),
 				inset 0 0.2em 0.2em rgba(240,240,240,0.8);
 
-	background-color: rgb(130,127,204);
-	
-	background-image: linear-gradient(white, yellow);
-	background-repeat: repeat;
-	background-size: 6cm;
-	background-blend-mode: multiply;
-	
 	
 }
 
@@ -143,9 +136,43 @@ input
 	overflow:auto;
 }
 
+/*
+#inputBox, #outputBox
+{
+	border-style:solid;
+	border-width:3pt;
+	border-color:rgba(120,120,120,0.6);
+	border-radius:3pt;
+}
+*/
+
+#inputBox
+{
+	position:relative;
+	margin-top:12pt;
+	margin-bottom:20pt;
+	
+}
+
+#outputBox
+{
+	position:relative;
+	margin-top:20pt;
+	
+}
+
 #screen, #input, #output
 {
 	/* mix-blend-mode:luminosity; */
+	
+
+	
+}
+
+.overlay
+{
+	position:absolute;
+	z-index:2;
 }
 
 /* Developer mode */
@@ -218,7 +245,7 @@ input
 	
 }
 
-.player .machineCasing
+.player #Pantalla
 {
 	position:fixed;
     top:50%;
@@ -341,25 +368,9 @@ input
 
 #input,#output
 {
-	border-style:solid;
-	border-width:3pt;
-	border-color:rgba(120,120,120,0.6);
-	border-radius:3pt;
 	mix-blend-mode:hard-light;	
 }
 
-#input
-{
-	margin-top:12pt;
-	margin-bottom:20pt;
-
-}
-
-#output
-{
-	margin-top:20pt;
-	
-}
 
 #logo
 {
@@ -371,14 +382,14 @@ input
 
 
 
-#themeChooser
+#casingThemeChooser
 {
 	font-size:5pt;
 	margin-right:3pt;
 	margin-bottom:10pt;
 }
 
-#themeChooser input
+#casingThemeChooser input
 {
 	width:12pt;
 	height:12pt;
@@ -476,7 +487,7 @@ input
 
 #Memory
 {
-	width: 6.5cm;
+	width: 6.75cm;
 }
 
 #Memory .memoryValue
@@ -488,6 +499,21 @@ input
 {
 	width: 3cm;
 }
+
+#MemoryTable
+{
+	overflow-x:auto;	
+	overflow-y:auto;	
+	height:100%;
+
+}
+
+#MemoryTable tr
+{
+	white-space: nowrap;
+}
+
+
 
 
 
@@ -594,6 +620,18 @@ input
 #Program
 {
 	width: 18cm;
+}
+
+#ProgramTable
+{
+	overflow-x:auto;	
+	overflow-y: auto;
+	height:100%;
+}	
+
+#ProgramTable tr
+{
+	white-space: nowrap;
 }
 
 .notEditable

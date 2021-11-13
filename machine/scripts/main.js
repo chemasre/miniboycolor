@@ -16,8 +16,7 @@
 		stackDataBackgroundColor: "rgb(34,32,81)",
 		inputOutputWidth: 1024,
 		inputOutputHeight: 64,
-		themeColors: [ "rgb(255,127,204)", "rgb(80,200,80)", "rgb(127,127,255)", "rgb(200,200,80)" ],
-		themeIndex: 0,
+		casingThemeIndex: 0,
 		showOnRun: false,
 		language: 1,
 		developerMode: false,
@@ -104,7 +103,8 @@
 		instructionResultContinue: 0,
 		instructionResultProgramEnd: 1,
 		instructionResultInterrupt: 2,
-		showOnRunProcessorFrequencyLimit: 100,		
+		showOnRunProcessorFrequencyLimit: 100,
+		casingThemeCount: 4
 		
 	}
 	
@@ -703,6 +703,28 @@
 			return result;
 						
 		}
+		
+		static RemoveClass(element, c)
+		{
+			var parts1 = element.className.split(" ");
+			var parts2 = new Array();
+			
+			for(var i = 0; i < parts1.length; i ++)
+			{
+				if(parts1[i] != c) { parts2.push(parts1[i]); }
+			}
+			
+			element.className = parts2.join(" ");
+			
+		}
+		
+		static AddClass(element, c)
+		{
+			var parts = element.className.split(" ");
+			parts.push(c);
+			
+			element.className = parts.join(" ");
+		}
 
 		static GetCookie(name)
 		{
@@ -776,8 +798,8 @@
 			var enabled = MachineUtils.GetCookie("DeveloperMode");
 			if(enabled != null) { preferences.developerMode = (enabled != 0); }
 			
-			var index = MachineUtils.GetCookie("ThemeIndex");
-			if(index != null) { preferences.themeIndex = index; }
+			var index = MachineUtils.GetCookie("CasingThemeIndex");
+			if(index != null) { preferences.casingThemeIndex = index; }
 				
 			var name = MachineUtils.GetCookie("DefaultProjectName");
 			if(name != null) { preferences.defaultProjectName = name; }
@@ -790,7 +812,7 @@
 		PreferencesSave()
 		{
 			MachineUtils.SetCookie("DeveloperMode", preferences.developerMode ? 1 : 0);			
-			MachineUtils.SetCookie("ThemeIndex", preferences.themeIndex);
+			MachineUtils.SetCookie("CasingThemeIndex", preferences.casingThemeIndex);
 			MachineUtils.SetCookie("DefaultProjectName", preferences.defaultProjectName);
 		}
 		
@@ -825,24 +847,31 @@
 		}
 		
 		
-		// Themes
+		// CasingThemes
 		
-		ThemeStart()
+		CasingThemeStart()
 		{
-			this.themeScreen = document.getElementById("Pantalla");			
+			this.casingThemeScreen = document.getElementById("Pantalla");			
 			
-			this.ThemeDoApply(preferences.themeIndex);
-			this.themeIndex = preferences.themeIndex;
+			this.CasingThemeDoApply(preferences.casingThemeIndex);
+			this.casingThemeIndex = preferences.casingThemeIndex;
 
 			
 		}
 		
-		ThemeDoApply(index)
+		CasingThemeDoApply(index)
 		{
-			this.themeScreen.style.backgroundColor = preferences.themeColors[index];
-			this.themeIndex = index;
+			for(var i = 0; i < constants.casingThemeCount; i ++)
+			{
+				MachineUtils.RemoveClass(this.casingThemeScreen, "casingTheme" + i);
+			}
 			
-			preferences.themeIndex = index;			
+			MachineUtils.AddClass(this.casingThemeScreen, "casingTheme" + index);
+			
+			//this.themeScreen.style.backgroundColor = preferences.themeColors[index];
+			this.casingThemeIndex = index;
+			
+			preferences.casingThemeIndex = index;			
 			this.PreferencesSave();
 		}
 		
@@ -2260,7 +2289,8 @@
 			this.screenBox = document.getElementById("screenBox");
 			this.screenBox.style.position = "relative";
 			this.screenBox.style.width  = screenPixelWidth * (configuration.screenWidth  + 2) + "cm";
-			this.screenBox.style.height = screenPixelHeight * (configuration.screenHeight  + 2) + "cm";			
+			this.screenBox.style.height = screenPixelHeight * (configuration.screenHeight  + 2) + "cm";
+			
 			this.screenCanvas = document.getElementById("screen");
 			this.screenCanvas.width = configuration.screenWidth;
 			this.screenCanvas.height = configuration.screenHeight;
@@ -2269,7 +2299,6 @@
 			this.screenCanvas.style.left = screenPixelWidth + "cm";		
 			this.screenCanvas.style.width = configuration.screenWidth * screenPixelWidth + "cm";
 			this.screenCanvas.style.height = configuration.screenHeight * screenPixelHeight + "cm";
-			this.screenCanvas.style.imageRendering = "crisp-edges";
 			
 			this.screenContext = this.screenCanvas.getContext("2d");
 			
@@ -2350,6 +2379,14 @@
 
 			this.screenGridContext.globalAlpha = 1.0;			
 			
+			// Screen overlay
+			
+			this.screenOverlay = document.getElementById("screenOverlay");
+			
+			this.screenOverlay.style.width = configuration.screenWidth * screenPixelWidth + "cm";
+			this.screenOverlay.style.height = configuration.screenHeight * screenPixelHeight + "cm";
+			this.screenOverlay.style.left = screenPixelWidth + "cm";		
+			this.screenOverlay.style.top = screenPixelHeight + "cm";
 						
 			this.screenBuffer = this.screenContext.createImageData(configuration.screenWidth, configuration.screenHeight);
 			
@@ -2371,6 +2408,16 @@
 		
 		}
 		
+		ScreenGetPixelUIWidth()
+		{
+			return preferences.screenWidth / configuration.screenWidth;
+		}
+		
+		ScreenGetPixelUIHeight()
+		{
+			return preferences.screenHeight / configuration.screenHeight;
+		}
+
 		ScreenShow()
 		{
 			var bufferData = this.screenBuffer.data;
@@ -2467,18 +2514,33 @@
 		InputOutputStart(isInput)
 		{
 			var canvas;
+			var overlay;
 			var context;
 			
 			var inputCharacterSize = preferences.screenWidth / configuration.inputMemorySize;
 			var outputCharacterSize = preferences.screenWidth / configuration.outputMemorySize;
+
+			var stylingWidth = (isInput ? configuration.inputMemorySize : configuration.outputMemorySize) * (isInput ? inputCharacterSize : outputCharacterSize) + "cm";
+			var stylingHeight = (isInput ? inputCharacterSize : outputCharacterSize) + "cm";
 			
 			canvas = document.getElementById(isInput ? "input" : "output");			
 			canvas.width = preferences.inputOutputWidth;
 			canvas.height = preferences.inputOutputHeight;
-			canvas.style.width = (isInput ? configuration.inputMemorySize : configuration.outputMemorySize) * (isInput ? inputCharacterSize : outputCharacterSize) + "cm";
-			canvas.style.height = (isInput ? inputCharacterSize : outputCharacterSize) + "cm";
+			canvas.style.width = stylingWidth;
+			canvas.style.height = stylingHeight;
 			
 			context = canvas.getContext("2d");
+			
+			var screenPixelWidth  = this.ScreenGetPixelUIWidth(); 
+			var screenPixelHeight = this.ScreenGetPixelUIHeight();
+
+			overlay = document.getElementById(isInput ? "inputOverlay" : "outputOverlay");
+			overlay.style.width = stylingWidth;
+			overlay.style.height = stylingHeight;
+			overlay.style.position = "absolute";
+			overlay.style.top = 0 + "cm";
+			overlay.style.left = screenPixelWidth + "cm";		
+			
 			
 			if(isInput)
 			{ 
@@ -2947,7 +3009,7 @@
 			
 			this.DeveloperModeStart();
 			
-			this.ThemeStart();
+			this.CasingThemeStart();
 			
 			this.DialogStart();
 			
@@ -2990,6 +3052,7 @@
 			this.DynamicMemoryReset();
 			this.MemoryReset();
 			this.ProgramClear();
+			this.ProgramClearLabels();
 			this.ProcessorReset();
 
 			this.ConfigurationShow();
@@ -3489,6 +3552,7 @@
 							
 							if(result)
 							{
+								this.ProgramClearLabels();
 								this.ProgramClear();
 								
 							}
@@ -4546,6 +4610,16 @@
 			}
 		}
 		
+		ProgramClearLabels()
+		{
+			for(var i = 0; i < configuration.programSize; i++)
+			{
+				this.programLabelsCells[i].value = "";
+			}
+
+		}
+
+		
 		ProcessorReset()
 		{
 			this.registersCells[registerId.a].value = "0";
@@ -4847,10 +4921,10 @@
 
 		// Events
 		
-		OnChangeTheme(index)
+		OnChangeCasingTheme(index)
 		{
-			this.ThemeDoApply(index);
-			this.themeIndex = index;
+			this.CasingThemeDoApply(index);
+			this.casingThemeIndex = index;
 		}
 		
 		OnKeyPressed(k)
