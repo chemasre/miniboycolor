@@ -1,0 +1,18 @@
+.casingTheme0
+{
+	background-color: rgb(255,127,204);
+
+	
+}
+
+.casingTheme0 .overlay
+{
+	background-image: url("images/casing-overlay-dots.png");
+	background-size: cover;
+}
+
+.casingTheme0 #screen
+{
+	image-rendering:crisp-edges;
+}
+

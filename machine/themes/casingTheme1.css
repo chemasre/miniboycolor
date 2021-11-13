@@ -1,0 +1,28 @@
+
+.casingTheme1
+{
+	background-color: rgb(80,200,80);
+	
+}
+
+.casingTheme1 .overlay
+{
+	background-image: url("images/casing-overlay-scanlines.png");
+	background-size: cover;
+}
+
+.casingTheme1
+{
+	filter:sepia(100%);
+}
+
+.casingTheme1 #screen
+{
+	image-rendering:crisp-edges;
+	filter:sepia(100%);
+}
+
+ .casingTheme1 #input, .casingTheme1  #output
+ {
+	 /* filter:blur(1.5pt); */
+ }

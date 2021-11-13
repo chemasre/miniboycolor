@@ -1,0 +1,18 @@
+.casingTheme3
+{
+	background-color: rgb(200,200,80);
+}
+
+.casingTheme3 #screen
+{
+	image-rendering:smooth;
+	filter:blur(3pt);
+		
+}
+
+.casingTheme3 #screenOverlay
+{
+	background-image: url("images/casing-overlay-dots.png");
+	background-size: cover;
+	filter:blur(1pt);
+}
