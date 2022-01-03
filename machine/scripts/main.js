@@ -31,7 +31,7 @@
 
 	var configuration =
 	{
-		version: "2.19",
+		version: "2.20",
 		staticMemorySize: 16,
 		stackMemorySize: 16,
 		screenWidth: 16,
@@ -174,52 +174,54 @@
 		call:					28,
 		ret:					29,
 		keyboardIsKeyPressed:   30,
-		memSetData:     		31,		
-		stringCopy: 		    32,		
-		stringLength:     		33,		
-		inputReadString:        34,
-		outputWriteString:      35,
-		outputWriteLineEnd:     36,
-		inputReadNumber:        37,
-		outputWriteNumber:      38,
-		inputReadCharacter:     39,
-		outputWriteCharacter:   40,
-		randGenerate:			41,
-		screenClear:			42,
-		screenSetClearColor:	43,
-		screenSetClearColorR:	44,
-		screenSetClearColorG:	45,
-		screenSetClearColorB:	46,
-		screenSetColorKey:		47,
-		screenSetColorKeyR:		48,
-		screenSetColorKeyG:		49,
-		screenSetColorKeyB:		50,
-		screenSetColorKeyEnabled: 51,
-		screenSetFlipXEnabled:	52,
-		screenSetFlipYEnabled:	53,
-		screenGetPixel:			54,
-		screenGetPixelR:		55,
-		screenGetPixelG:		56,
-		screenGetPixelB:		57,
-		screenSetPixel:			58,
-		screenSetPixelR:		59,
-		screenSetPixelG:		60,
-		screenSetPixelB:		61,
-		screenSetPixelRGB:		62,
-		screenDrawImage:        63,
-		soundEmit:				64,
-		soundStop:				65,
-		stackPush:				66,
-		stackPop:				67,
-		stackGetLocal:			68,
-		stackSetLocal:			69,
-		stackGetParameter:		70,
-		stackPushParameter:		71,
-		allocateMemory:			72,
-		releaseMemory:			73,
-		getTimer:				74,
-		resetTimer:				75,
-		breakPoint:				76
+		keyboardIsKeyUp:		31,
+		keyboardIsKeyDown:		32,		
+		memSetData:     		33,		
+		stringCopy: 		    34,		
+		stringLength:     		35,		
+		inputReadString:        36,
+		outputWriteString:      37,
+		outputWriteLineEnd:     38,
+		inputReadNumber:        39,
+		outputWriteNumber:      40,
+		inputReadCharacter:     41,
+		outputWriteCharacter:   42,
+		randGenerate:			43,
+		screenClear:			44,
+		screenSetClearColor:	45,
+		screenSetClearColorR:	46,
+		screenSetClearColorG:	47,
+		screenSetClearColorB:	48,
+		screenSetColorKey:		49,
+		screenSetColorKeyR:		50,
+		screenSetColorKeyG:		51,
+		screenSetColorKeyB:		52,
+		screenSetColorKeyEnabled: 53,
+		screenSetFlipXEnabled:	54,
+		screenSetFlipYEnabled:	55,
+		screenGetPixel:			56,
+		screenGetPixelR:		57,
+		screenGetPixelG:		58,
+		screenGetPixelB:		59,
+		screenSetPixel:			60,
+		screenSetPixelR:		61,
+		screenSetPixelG:		62,
+		screenSetPixelB:		63,
+		screenSetPixelRGB:		64,
+		screenDrawImage:        65,
+		soundEmit:				66,
+		soundStop:				67,
+		stackPush:				68,
+		stackPop:				69,
+		stackGetLocal:			70,
+		stackSetLocal:			71,
+		stackGetParameter:		72,
+		stackPushParameter:		73,
+		allocateMemory:			74,
+		releaseMemory:			75,
+		getTimer:				76,
+		resetTimer:				77,
+		breakPoint:				78
 		
 	}
 	
@@ -373,6 +375,16 @@
 			{
 				opCodeNames : [ "_TECLA_PULSADA_"],
 				opCode : opCodes.keyboardIsKeyPressed,
+				argCount : 2
+			},
+			{
+				opCodeNames : [ "_TECLA_ABAJO_"],
+				opCode : opCodes.keyboardIsKeyDown,
+				argCount : 2
+			},
+			{
+				opCodeNames : [ "_TECLA_ARRIBA_"],
+				opCode : opCodes.keyboardIsKeyUp,
 				argCount : 2
 			},
 			{
@@ -2605,8 +2617,14 @@
 		KeyboardStart()
 		{
 			this.keyboardKeysState = new Array(constants.keyboardKeyCodeCount);
+			this.keyboardKeysEventPending = new Array(constants.keyboardKeyCodeCount);
 			
-			for(var i = 0; i < constants.keyboardKeyCodeCount; i ++) { this.keyboardKeysState[i] = false; }
+			
+			for(var i = 0; i < constants.keyboardKeyCodeCount; i ++)
+			{
+				this.keyboardKeysEventPending[i] = false;
+				this.keyboardKeysState[i] = false;
+			}
 			
 			this.inputWaitString = false
 			this.inputStringReady = false;
@@ -2716,6 +2734,18 @@
 				this.memory[this.outputMemoryAddress + configuration.outputMemorySize - 1] = c;
 			}			
 		}
+		
+		// Controls
+		ControlsStart()
+		{
+			this.controlsBox = document.getElementById("ControlsBox");
+			
+			var screenPixelWidth  = this.ScreenGetPixelUIWidth(); 
+			var screenPixelHeight = this.ScreenGetPixelUIHeight();
+			
+			this.controlsBox.style.left = screenPixelWidth + "cm"; 
+		}
+		
 		
 		// Audio
 		
@@ -2948,6 +2978,7 @@
 			this.keyReleased = false;
 			this.keyReleasedCode = 0;
 			this.keyboardKeysState = new Array();
+			this.keyboardKeysEventPending = new Array();
 			this.shortcutEnabled = false;
 			this.toggleToneGenerator = false;
 			this.insertProgramLinePressed = false;
@@ -3042,6 +3073,8 @@
 
 			this.KeyboardStart();
 			
+			this.ControlsStart();
+			
 			this.AudioStart();
 			
 			this.ProjectStart();
@@ -3119,6 +3152,8 @@
 				{
 					this.keyboardKeysState[this.keyPressedCode] = true;
 				}
+				
+				this.keyboardKeysEventPending[this.keyPressedCode] = true;
 			}
 			
 			if(this.keyReleased)
@@ -3127,6 +3162,8 @@
 				{
 					this.keyboardKeysState[this.keyReleasedCode] = false;
 				}
+
+				this.keyboardKeysEventPending[this.keyPressedCode] = true;
 			}			
 			
 			// Update shortcuts
@@ -3970,6 +4007,48 @@
 
 			}
 			else if(opCode == opCodes.keyboardIsKeyPressed)
+			{
+				var code = this.ProgramReadArg(instructionIndex, 1);
+				var result = 0;
+				
+				if(code >= 0 && code < constants.keyboardKeyCodeCount)
+				{ result = this.keyboardKeysState[code] ? 1 : 0; }
+				
+				this.ProgramWriteArg(instructionIndex, 0, result);
+			}
+			else if(opCode == opCodes.keyboardIsKeyDown || opCode == opCodes.keyboardIsKeyUp)
+			{
+				var code = this.ProgramReadArg(instructionIndex, 1);
+				var result = 0;
+				
+				var isDown = (opCode == opCodes.keyboardIsKeyDown);
+
+				if(code >= 0 && code < constants.keyboardKeyCodeCount)
+				{
+					if(this.keyboardKeysEventPending[code])
+					{
+						if(isDown)
+						{
+							result = (this.keyboardKeysState[code] ? 1 : 0);
+						}
+						else
+						{
+							result = (!this.keyboardKeysState[code] ? 1 : 0);
+						}
+						
+						this.keyboardKeysEventPending[code] = false;						
+						
+					}
+					else
+					{
+						result = 0;
+					}
+
+				}
+				
+				this.ProgramWriteArg(instructionIndex, 0, result);
+			}
+			else if(opCode == opCodes.keyboardIsKeyUp)
 			{
 				var code = this.ProgramReadArg(instructionIndex, 1);
 				var result = 0;

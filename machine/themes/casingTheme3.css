@@ -1,7 +1,10 @@
 .casingTheme3
 {
 	background-color: rgb(200,200,80);
+	background-image: url("images/casing-background-03.png");
+	background-size: cover;	
 }
+
 
 .casingTheme3 #screen
 {
@@ -9,7 +12,14 @@
 		
 }
 
+.casingTheme3 .casingButton
+{
+	/* filter:hue-rotate(60deg); */
+}
+
+
 .casingTheme3 .overlay
 {
 	display:none;
 }
+

@@ -100,6 +100,75 @@ input
 	
 }
 
+#ControlsBox
+{
+	display:none;
+	height:2cm;
+	position:relative;
+	margin-bottom:1cm;
+}
+
+.casingButton
+{
+	filter: drop-shadow(2pt 2pt 2pt black);
+}
+
+.casingButton:active
+{
+	filter:none;
+	margin-top:2pt;
+}
+
+#CasingA, #CasingB
+{
+	position:absolute;
+	height:1.25cm;
+	width:1.25cm;
+}
+
+#CasingUp, #CasingDown
+{
+	position:absolute;
+	left:1.25cm;
+	height:1.25cm;
+	width:0.75cm;
+}
+
+ #CasingDown
+ {
+	 top:1.5cm;
+ }
+
+#CasingLeft, #CasingRight
+{
+	position:absolute;
+	top:1cm;
+	height:0.75cm;
+	width:1.25cm;
+}
+
+#CasingLeft
+{
+	left:0.25cm;
+}
+
+#CasingRight
+{
+	left:1.75cm;
+}
+
+#CasingA
+{
+	top:0.75cm;
+	left: 7cm;
+}
+
+#CasingB
+{
+	top:0.75cm;
+	left: 8.5cm;
+}
+
 
 .machineMenu
 {
@@ -160,6 +229,12 @@ input
 	margin-top:20pt;
 	
 }
+
+#screen, #screenOverlay
+{
+	/* border-radius:10pt; */
+}
+
 
 #screen, #input, #output
 {
@@ -305,6 +380,7 @@ input
 	top:50%;
 	transform:translate(0, -50%);
 	overflow:auto;
+	white-space: nowrap;
 	background-image: url("images/choose-project-gradient.png");
 	background-size:contain;
 	background-color:transparent;

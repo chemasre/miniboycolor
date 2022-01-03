@@ -1,6 +1,9 @@
 .casingTheme2
 {
 	background-color: rgb(127,127,255);
+	background-image: url("images/casing-background-02.png");
+	background-size: cover;
+	
 }
 
 .casingTheme2 #screen
@@ -8,8 +11,16 @@
 	image-rendering:crisp-edges;
 }
 
+.casingTheme2 .casingButton
+{
+	/* filter:hue-rotate(250deg); */
+}
+
 .casingTheme2 .overlay
 {
-	display:none;
+	background-image: url("images/casing-overlay-screen.png");
+	background-size:cover;
+	opacity:0.2;
+	mix-blend-mode:lighten;
 }
 

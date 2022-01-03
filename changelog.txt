@@ -35,4 +35,8 @@ Versión 2.14
 
 - Añadida capacidad para cambiar entre modo desarrollador y modo jugador.
 
+2.20
+
+- Añadidas instrucciones _TECLA_ABAJO_ y _TECLA_ARRIBA_
+
  

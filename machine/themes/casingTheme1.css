@@ -1,12 +1,19 @@
 .casingTheme1
 {
 	background-color: rgb(80,200,80);
+	background-image: url("images/casing-background-01.png");
+	background-size: cover;
 	
 }
 
 .casingTheme1 #screen
 {
 	image-rendering:smooth;
+}
+
+.casingTheme1 .casingButton
+{
+	/* filter:hue-rotate(120deg); */
 }
 
 .casingTheme1 #input, .casingTheme1 #output

@@ -825,6 +825,14 @@ la llamada apiló
 `Macro que deja en arg1 el valor CIERTO(1) si la tecla 
 indicada por arg2 está pulsada y FALSO(0) si no
 `,
+`Macro que deja en arg1 el valor CIERTO(1) si la tecla 
+indicada por arg2 ha pasado de no estar pulsada a estar
+pulsada y FALSO(0) si no
+`,
+`Macro que deja en arg1 el valor CIERTO(1) si la tecla 
+indicada por arg2 ha pasado de estar pulsada a no estar
+pulsada y FALSO(0) si no
+`,
 `Macro que mueve a la dirección de memoria
 arg1 los datos declarados en arg2
 `,
