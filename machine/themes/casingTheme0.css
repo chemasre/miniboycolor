@@ -10,6 +10,7 @@
 .casingTheme0 #screen
 {
 	image-rendering:crisp-edges;
+	image-rendering:pixelated;  /* Fix for Brave browser */
 }
 
 .casingTheme0 .casingButton

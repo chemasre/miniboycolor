@@ -9,6 +9,8 @@
 .casingTheme2 #screen
 {
 	image-rendering:crisp-edges;
+	image-rendering:pixelated; /* Fix for Brave browser */
+
 }
 
 .casingTheme2 .casingButton
