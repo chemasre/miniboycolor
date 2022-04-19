@@ -23,11 +23,12 @@ body, input, button, textarea
 
 	font-family: 'machineFont', monospace ;
 	font-style: normal;
-	/*color: rgb(0, 160, 164); DARK THEME */
-	color: rgb(40, 40, 40);
-	/*background-color: rgb(40,40,40); DARK THEME */
-	background-color: rgb(255,255,255);
+	color: rgb(0, 160, 164);
+	background-color: rgb(40,40,40);
 }
+
+
+
 
 a
 {
@@ -720,15 +721,15 @@ input
 
 .backgroundField
 {
-	/* background-color: rgb(40,40,40); DARK THEME */
-	background-color: rgb(255,255,255);
+	background-color: rgb(40,40,40);
 }
 
 .backgroundFieldBase
 {
-	/* background-color: rgb(40,40,40,0.8); DARK THEME */
-	background-color: rgb(255,255,255);
+	background-color: rgb(40,40,40,0.8);
 }
+
+
 
 /*
 .backgroundMachine
@@ -889,5 +890,25 @@ input
 {
 	float:right;
 }
+
+/* QUICK AND DIRTY LIGHT THEME FOR PRESENTATIONS */
+
+/* 
+body, input, button, textarea
+{
+	color: rgb(40, 40, 40);
+	background-color: rgb(255,255,255);
+}
+
+.backgroundField
+{
+	background-color: rgb(255,255,255);
+}
+
+.backgroundFieldBase
+{
+	background-color: rgb(255,255,255);
+}
+*/
 
 

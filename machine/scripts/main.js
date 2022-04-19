@@ -9,13 +9,19 @@
 		screenGridResolutionWidth: 1024,
 		screenGridResolutionHeight: 1024,
 		screenGridColor:  "#FFFFFF22",
-		// instructionBackgroundColor: "rgb(40,40,40)", // DARK THEME
-		instructionBackgroundColor: "rgb(255,255,255)",		
+				
+		instructionBackgroundColor: "rgb(40,40,40)", 
 		currentInstructionBackgoundColor: "yellow",
-		// memoryBackgroundColor: "rgb(40,40,40)", // DARK THEME
-		memoryBackgroundColor: "rgb(255,255,255)",
-		currentStackBaseBackgroundColor: "rgb(62,67,145)",
-		// stackDataBackgroundColor: "rgb(34,32,81)", // DARK THEME
+		memoryBackgroundColor: "rgb(40,40,40)",
+		stackDataBackgroundColor: "rgb(34,32,81)",
+
+		// QUICK AND DIRTY LIGHT THEME
+		// instructionBackgroundColor: "rgb(255,255,255)",		
+		// currentInstructionBackgoundColor: "yellow",
+		// memoryBackgroundColor: "rgb(255,255,255)",
+		// currentStackBaseBackgroundColor: "rgb(62,67,145)",
+		
+		
 		stackDataBackgroundColor: "rgb(0,0,255)",
 		inputOutputWidth: 1024,
 		inputOutputHeight: 64,
@@ -2853,8 +2859,10 @@
 				
 				//alert("Alocatación conseguida");
 				
-				//var allocationColor = [Math.floor(20 + Math.random() * 100), Math.floor(20 + Math.random() * 100), Math.floor(20 + Math.random() * 100)]; // DARK THEME
-				var allocationColor = [Math.floor(150 + Math.random() * 100), Math.floor(150 + Math.random() * 100), Math.floor(150 + Math.random() * 100)];
+				var allocationColor = [Math.floor(20 + Math.random() * 100), Math.floor(20 + Math.random() * 100), Math.floor(20 + Math.random() * 100)];
+				
+				// QUICK AND DIRTY LIGHT THEME
+				//var allocationColor = [Math.floor(150 + Math.random() * 100), Math.floor(150 + Math.random() * 100), Math.floor(150 + Math.random() * 100)];
 
 				var allocation = { baseAddress: allocationBaseAddress, size: requiredSize, color: allocationColor }				
 				this.dynamicAllocations.push(allocation);
