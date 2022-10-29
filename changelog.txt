@@ -39,4 +39,8 @@ Versión 2.14
 
 - Añadidas instrucciones _TECLA_ABAJO_ y _TECLA_ARRIBA_
 
+2.21
+
+- Añadidas instrucciones _PON_USAR_RECORTE_, _PON_USAR_RECORTE_IZQUIERDO_,  _PON_USAR_RECORTE_ARRIBA_,  _PON_USAR_RECORTE_ABAJO_. 
+
  
