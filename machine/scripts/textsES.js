@@ -1014,6 +1014,30 @@ por el temporizador indicado por arg2 desde su último reinicio.
 `,
 `Interrumpe la ejecución del programa para permitir su
 depuración.
+`,
+`Macro que activa el descarte de píxels por área de
+recorte en el dibujado si el valor de arg1 es 1 (CIERTO),
+o lo desactiva si es 0 (FALSO).
+`,
+`Macro que establece el valor del límite izquierdo
+del área de recorte al valor indicado por arg1.
+Las operaciones de dibujado  no afectarán a píxels
+cuya coordenada X sea inferior a este valor.
+`,
+`Macro que establece el valor del límite derecho
+del área de recorte al valor indicado por arg1.
+Las operaciones de dibujado  no afectarán a píxels
+cuya coordenada X sea superior a este valor.
+`,
+`Macro que establece el valor del límite superior
+del área de recorte al valor indicado por arg1.
+Las operaciones de dibujado  no afectarán a píxels
+cuya coordenada Y sea inferior a este valor.
+`,
+`Macro que establece el valor del límite inferior
+del área de recorte al valor indicado por arg1.
+Las operaciones de dibujado  no afectarán a píxels
+cuya coordenada Y sea superior a este valor.
 `
     ],
     

@@ -40,7 +40,7 @@
 
 	var configuration =
 	{
-		version: "2.20",
+		version: "2.21",
 		staticMemorySize: 16,
 		stackMemorySize: 16,
 		screenWidth: 16,
@@ -230,7 +230,12 @@
 		releaseMemory:			75,
 		getTimer:				76,
 		resetTimer:				77,
-		breakPoint:				78
+		breakPoint:				78,
+		screenSetClipLeft:		79,
+		screenSetClipRight:		80,
+		screenSetClipTop:		81,
+		screenSetClipBottom:	82,
+		screenSetClipEnabled:	83
 		
 	}
 	
@@ -635,7 +640,32 @@
 				opCodeNames : [ "INTERRUMPE","INT","INTERRUPT"],
 				opCode : opCodes.breakPoint,
 				argCount : 0
-			}
+			},
+			{
+				opCodeNames : [ "_PON_USAR_RECORTE_"],
+				opCode : opCodes.screenSetClipEnabled,
+				argCount : 1
+			},			
+			{
+				opCodeNames : [ "_PON_RECORTE_IZQUIERDO_"],
+				opCode : opCodes.screenSetClipLeft,
+				argCount : 1
+			},			
+			{
+				opCodeNames : [ "_PON_RECORTE_DERECHO_"],
+				opCode : opCodes.screenSetClipRight,
+				argCount : 1
+			},			
+			{
+				opCodeNames : [ "_PON_RECORTE_ARRIBA_"],
+				opCode : opCodes.screenSetClipTop,
+				argCount : 1
+			},			
+			{
+				opCodeNames : [ "_PON_RECORTE_ABAJO_"],
+				opCode : opCodes.screenSetClipBottom,
+				argCount : 1
+			}			
 		
 	]
 	
@@ -1597,7 +1627,16 @@
 			
 		ScreenGetControlMemorySize()
 		{
-			return 2 * configuration.screenDepth + 3;			
+			var size = 0;
+			
+			size += configuration.screenDepth; // Clear color
+			size += configuration.screenDepth; // Key color
+			size += 1; // Key enabled
+			size += 2; // Flip X and Y
+			size += 4; // Clip left, right, top and bottom
+			size += 1; // Clip enabled
+			
+			return size;
 		}
 		
 		
@@ -2419,6 +2458,12 @@
 			this.screenControlMemoryFlipXOffset = this.screenControlMemoryColorKeyOffset + configuration.screenDepth;
 			this.screenControlMemoryFlipYOffset = this.screenControlMemoryFlipXOffset + 1;
 			this.screenControlMemoryColorKeyEnabledOffset = this.screenControlMemoryFlipYOffset + 1;
+			this.screenControlMemoryClipLeftOffset = this.screenControlMemoryColorKeyEnabledOffset + 1;
+			this.screenControlMemoryClipRightOffset = this.screenControlMemoryClipLeftOffset + 1;
+			this.screenControlMemoryClipTopOffset = this.screenControlMemoryClipRightOffset + 1;
+			this.screenControlMemoryClipBottomOffset = this.screenControlMemoryClipTopOffset + 1;
+			this.screenControlMemoryClipEnabledOffset = this.screenControlMemoryClipBottomOffset + 1;
+			
 			
 
 			this.ScreenShow();
@@ -4241,20 +4286,39 @@
 			{
 				var pixelsStartAddress = this.ScreenGetPixelsStartAddress();
 				
+				
 				for(var i = 0; i < configuration.screenHeight * configuration.screenWidth; i++)
 				{	
-					var pixelAddress = pixelsStartAddress + i * configuration.screenDepth;
-					
-					this.memory[pixelAddress + 0] = this.memory[this.screenMemoryAddress + this.screenControlMemoryClearColorOffset + 0];
-					
-					if(configuration.screenDepth == 3)
+					var clipDiscard = false;
+			
+					if(this.memory[this.screenMemoryAddress + this.screenControlMemoryClipEnabledOffset] != 0)
 					{
-						this.memory[pixelAddress + 1] = this.memory[this.screenMemoryAddress + this.screenControlMemoryClearColorOffset + 1];
-						this.memory[pixelAddress + 2] = this.memory[this.screenMemoryAddress + this.screenControlMemoryClearColorOffset + 2];
+						var clipLeft = this.memory[this.screenMemoryAddress + this.screenControlMemoryClipLeftOffset];
+						var clipRight = this.memory[this.screenMemoryAddress + this.screenControlMemoryClipRightOffset];
+						var clipTop = this.memory[this.screenMemoryAddress + this.screenControlMemoryClipTopOffset];
+						var clipBottom = this.memory[this.screenMemoryAddress + this.screenControlMemoryClipBottomOffset];
+						
+						var pixelY = i / configuration.screenWidth;
+						var pixelX = i % configuration.screenWidth;
+
+						clipDiscard = (pixelX < clipLeft || pixelX > clipRight || pixelY < clipTop || pixelY > clipBottom);
+					}
+					
+					if(!clipDiscard)
+					{
+						var pixelAddress = pixelsStartAddress + i * configuration.screenDepth;
+						
+						this.memory[pixelAddress + 0] = this.memory[this.screenMemoryAddress + this.screenControlMemoryClearColorOffset + 0];
+						
+						if(configuration.screenDepth == 3)
+						{
+							this.memory[pixelAddress + 1] = this.memory[this.screenMemoryAddress + this.screenControlMemoryClearColorOffset + 1];
+							this.memory[pixelAddress + 2] = this.memory[this.screenMemoryAddress + this.screenControlMemoryClearColorOffset + 2];
+						}
 					}
 				}
 			}
-			else if(opCode == opCodes.screenSetFlipXEnabled || opCode == opCodes.screenSetFlipYEnabled || opCode == opCodes.screenSetColorKeyEnabled)
+			else if(opCode == opCodes.screenSetFlipXEnabled || opCode == opCodes.screenSetFlipYEnabled || opCode == opCodes.screenSetColorKeyEnabled || opCode == opCodes.screenSetClipEnabled)
 			{
 				var value = this.ProgramReadArg(instructionIndex, 0);
 				
@@ -4262,8 +4326,9 @@
 				
 				if(opCode == opCodes.screenSetFlipXEnabled) { offset = this.screenControlMemoryFlipXOffset; }
 				else if(opCode == opCodes.screenSetFlipYEnabled) { offset = this.screenControlMemoryFlipYOffset; }
-				else // opCode == opCodes.screenSetColorKeyEnabled
-				{ offset = this.screenControlMemoryColorKeyEnabledOffset; }
+				else if(opCode == opCodes.screenSetColorKeyEnabled) { offset = this.screenControlMemoryColorKeyEnabledOffset; }
+				else // opCode == opCodes.screenSetClipEnabled
+				{ offset = this.screenControlMemoryClipEnabledOffset; }
 				
 				this.memory[this.screenMemoryAddress + offset] = value;
 				
@@ -4312,6 +4377,21 @@
 				}
 				
 			}
+			else if(opCode == opCodes.screenSetClipLeft || opCode == opCodes.screenSetClipRight || opCode == opCodes.screenSetClipTop || opCode == opCodes.screenSetClipBottom)
+			{
+				var value = this.ProgramReadArg(instructionIndex, 0);
+				
+				var offset;
+				
+				if(opCode == opCodes.screenSetClipLeft) { offset = this.screenControlMemoryClipLeftOffset; }
+				else if(opCode == opCodes.screenSetClipRight) { offset = this.screenControlMemoryClipRightOffset; }
+				else if(opCode == opCodes.screenSetClipTop) { offset = this.screenControlMemoryClipTopOffset; }
+				else // opCode == opCodes.screenSetClipBottom
+				{ offset = this.screenControlMemoryClipBottomOffset; }
+				
+				this.memory[this.screenMemoryAddress + offset] = value;
+				
+			}			
 			else if(opCode == opCodes.screenGetPixel || opCode == opCodes.screenGetPixelR || opCode == opCodes.screenGetPixelG || opCode == opCodes.screenGetPixelB)
 			{
 				var value1 = this.ProgramReadArg(instructionIndex, 1);
@@ -4345,30 +4425,46 @@
 				
 				if(opCode == opCodes.screenSetPixel || configuration.screenDepth == 3)
 				{				
-					var component = 0;
-					var allComponents = false;
-					if(opCode == opCodes.screenSetPixel || opCode == opCodes.screenSetPixelR) { component = 0; }
-					else if(opCode == opCodes.screenSetPixelG) { component = 1; }
-					else if(opCode == opCodes.screenSetPixelB) { component = 2; }				
-					else // opCode == opCodes.screenSetPixelRGB
-					{ allComponents = true; }
+			
+					var clipDiscard = false;
 					
-					var pixelAddress = this.ScreenGetPixelsStartAddress() + configuration.screenDepth * (value2 * configuration.screenWidth + value1);
-					
-					if(allComponents)
+					if(this.memory[this.screenMemoryAddress + this.screenControlMemoryClipEnabledOffset] != 0)
 					{
-						var b = (value3 & 0x0000FF);
-						var g = (value3 & 0x00FF00) / 0x100;
-						var r = (value3 & 0xFF0000) / 0x10000;
+						var clipLeft = this.memory[this.screenMemoryAddress + this.screenControlMemoryClipLeftOffset];
+						var clipRight = this.memory[this.screenMemoryAddress + this.screenControlMemoryClipRightOffset];
+						var clipTop = this.memory[this.screenMemoryAddress + this.screenControlMemoryClipTopOffset];
+						var clipBottom = this.memory[this.screenMemoryAddress + this.screenControlMemoryClipBottomOffset];
 						
-						this.memory[pixelAddress + 0] = r;
-						this.memory[pixelAddress + 1] = g;
-						this.memory[pixelAddress + 2] = b;
-						
+						clipDiscard = (value1 < clipLeft || value1 > clipRight || value2 < clipTop || value2 > clipBottom);
 					}
-					else
-					{
-						this.memory[pixelAddress + component] = value3;
+					
+					if(!clipDiscard)
+					{			
+						var component = 0;
+						var allComponents = false;
+						if(opCode == opCodes.screenSetPixel || opCode == opCodes.screenSetPixelR) { component = 0; }
+						else if(opCode == opCodes.screenSetPixelG) { component = 1; }
+						else if(opCode == opCodes.screenSetPixelB) { component = 2; }				
+						else // opCode == opCodes.screenSetPixelRGB
+						{ allComponents = true; }
+						
+						var pixelAddress = this.ScreenGetPixelsStartAddress() + configuration.screenDepth * (value2 * configuration.screenWidth + value1);
+						
+						if(allComponents)
+						{
+							var b = (value3 & 0x0000FF);
+							var g = (value3 & 0x00FF00) / 0x100;
+							var r = (value3 & 0xFF0000) / 0x10000;
+							
+							this.memory[pixelAddress + 0] = r;
+							this.memory[pixelAddress + 1] = g;
+							this.memory[pixelAddress + 2] = b;
+							
+						}
+						else
+						{
+							this.memory[pixelAddress + component] = value3;
+						}
 					}
 				}
 				else
@@ -4376,6 +4472,7 @@
 					alert("No puedes poner los componentes de color en la línea de programa " + instructionIndex + " porque la pantalla no tiene suficiente profundidad");
 					instructionResult = constants.instructionResultProgramEnd;
 				}
+
 			}
 			else if(opCode == opCodes.screenDrawImage)
 			{
@@ -4421,7 +4518,21 @@
 									colorKeyDiscard = (imagePixelR == keyColorR && imagePixelG == keyColorG &&  imagePixelB == keyColorB);
 								}
 								
-								if(!colorKeyDiscard)
+								var clipDiscard = false;
+								
+								if(this.memory[this.screenMemoryAddress + this.screenControlMemoryClipEnabledOffset] != 0)
+								{
+									var clipLeft = this.memory[this.screenMemoryAddress + this.screenControlMemoryClipLeftOffset];
+									var clipRight = this.memory[this.screenMemoryAddress + this.screenControlMemoryClipRightOffset];
+									var clipTop = this.memory[this.screenMemoryAddress + this.screenControlMemoryClipTopOffset];
+									var clipBottom = this.memory[this.screenMemoryAddress + this.screenControlMemoryClipBottomOffset];
+									
+									clipDiscard = (screenPixelX < clipLeft || screenPixelX > clipRight || 
+													screenPixelY < clipTop || screenPixelY > clipBottom);
+									
+								}								
+								
+								if(!colorKeyDiscard && !clipDiscard)
 								{							
 									this.memory[screenPixelAddress + 0] = imagePixelR;
 									this.memory[screenPixelAddress + 1] = imagePixelG;
