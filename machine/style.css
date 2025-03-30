@@ -363,7 +363,7 @@ input
 
 .player #BarraLateral
 {
-	display:none;
+	display:hidden;
 }
 
 .player #ListaJuegos
