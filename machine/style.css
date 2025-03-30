@@ -363,12 +363,11 @@ input
 	
 }
 
-/*
+
 .player #BarraLateral
 {
-	display:hidden;
+    width:30%;
 }
-*/
 
 .player #ListaJuegos
 {
