@@ -284,12 +284,12 @@ input
 	visibility:visible;
 }
 
-/*
+
 .developer #BarraLateral
 {
 	display:none;
 }
-*/
+
 
 
 
@@ -363,10 +363,12 @@ input
 	
 }
 
+/*
 .player #BarraLateral
 {
 	display:hidden;
 }
+*/
 
 .player #ListaJuegos
 {
