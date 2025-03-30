@@ -8,6 +8,7 @@
 <link href="themes/casingTheme1.css" rel="stylesheet">
 <link href="themes/casingTheme2.css" rel="stylesheet">
 <link href="themes/casingTheme3.css" rel="stylesheet">
+<link href="external/mastodon-timeline/mastodon-timeline.min.css" rel="stylesheet">
 <meta charset="UTF-8">
 <script src="scripts/textsES.js"></script>
 <script src="scripts/textsEN.js"></script>
@@ -33,8 +34,23 @@
 <div class="row">
 <div class="column">
 	<div id="BarraLateral">
-		<div class="margined"><a href="https://twitter.com/intent/tweet?button_hashtag=MiniBoyColor&ref_src=twsrc%5Etfw" class="twitter-hashtag-button" data-size="large" data-related="miniboycolor" data-show-count="false">Tweet #MiniBoyColor</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script></div>
-		<div class="margined"><a class="twitter-timeline" data-width="300" data-theme="dark" href="https://twitter.com/MiniBoyColor?ref_src=twsrc%5Etfw">Tweets by MiniBoyColor</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+		<div class="margined">        
+        <!-- Begin embed mastodon timeline code -->
+        <div id="mt-container" class="mt-container">
+          <div class="mt-body" role="feed">
+            <div class="mt-loading-spinner"></div>
+          </div>
+        </div>    
+        <script src="external/mastodon-timeline/mastodon-timeline.umd.js"></script>
+        <script>
+          const myTimeline = new MastodonTimeline.Init({
+            instanceUrl: "https://mastodon.online",
+            timelineType: "hashtag",
+            hashtagName: "fediverse",
+          });
+        </script>
+        <!-- End embed mastodon timeline code -->
+        </div>
 	</div>
 </div>
 <div class="column">
