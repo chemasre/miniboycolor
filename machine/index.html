@@ -34,9 +34,9 @@
 <div class="row">
 <div class="column">
 	<div id="BarraLateral">
-		<div class="margined">        
+		<div class="margined">
         <!-- Begin embed mastodon timeline code -->
-        <div id="mt-container" class="mt-container" style="background:none;color:white">
+        <div id="mt-container" class="mt-container">
           <div class="mt-body" role="feed">
             <div class="mt-loading-spinner"></div>
           </div>
@@ -47,6 +47,8 @@
             instanceUrl: "https://mastodon.online",
             timelineType: "hashtag",
             hashtagName: "fediverse",
+            defaultTheme: "light",
+            
           });
           
           console.log("Initalized Mastodon");
