@@ -361,6 +361,11 @@ input
 	
 }
 
+.player #BarraLateral
+{
+	display:none;
+}
+
 .player #ListaJuegos
 {
 	display:block;
